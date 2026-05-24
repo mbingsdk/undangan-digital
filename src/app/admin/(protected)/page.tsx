@@ -1,42 +1,19 @@
 import type { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
+import Link from "next/link";
+import { getInvitationDashboardSummary } from "@/features/invitations/service";
 
 export const metadata: Metadata = {
   title: "Dashboard Admin | Undangan Digital",
 };
 
 export default async function AdminDashboardPage() {
-  const [totalInvitations, publishedInvitations, totalRsvps, totalWishes, latestInvitations] =
-    await Promise.all([
-      prisma.invitation.count({
-        where: {
-          deletedAt: null,
-        },
-      }),
-      prisma.invitation.count({
-        where: {
-          deletedAt: null,
-          status: "PUBLISHED",
-        },
-      }),
-      prisma.rSVP.count(),
-      prisma.wish.count(),
-      prisma.invitation.findMany({
-        orderBy: {
-          createdAt: "desc",
-        },
-        select: {
-          id: true,
-          slug: true,
-          status: true,
-          title: true,
-        },
-        take: 5,
-        where: {
-          deletedAt: null,
-        },
-      }),
-    ]);
+  const {
+    latestInvitations,
+    publishedInvitations,
+    totalInvitations,
+    totalRsvps,
+    totalWishes,
+  } = await getInvitationDashboardSummary();
 
   const metrics = [
     {
@@ -65,9 +42,22 @@ export default async function AdminDashboardPage() {
         </p>
         <h1 className="mt-3 text-3xl font-semibold">Ringkasan operasional</h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-600">
-          Shell awal untuk panel admin. Fitur CRUD undangan akan dikerjakan pada
-          sprint berikutnya.
+          Pantau data undangan dan lanjutkan pekerjaan admin dari satu tempat.
         </p>
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+          <Link
+            className="inline-flex h-11 items-center justify-center bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800"
+            href="/admin/invitations/new"
+          >
+            Buat undangan
+          </Link>
+          <Link
+            className="inline-flex h-11 items-center justify-center border border-stone-300 bg-white px-4 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
+            href="/admin/invitations"
+          >
+            Lihat daftar undangan
+          </Link>
+        </div>
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -95,7 +85,12 @@ export default async function AdminDashboardPage() {
                 key={invitation.id}
               >
                 <div>
-                  <p className="font-medium">{invitation.title}</p>
+                  <Link
+                    className="font-medium transition hover:text-rose-700"
+                    href={`/admin/invitations/${invitation.id}`}
+                  >
+                    {invitation.title}
+                  </Link>
                   <p className="mt-1 text-sm text-stone-600">
                     /{invitation.slug}
                   </p>

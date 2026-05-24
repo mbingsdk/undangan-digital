@@ -27,6 +27,12 @@ export default async function AdminLayout({
             >
               Dashboard
             </Link>
+            <Link
+              className="inline-flex h-10 items-center justify-center border border-stone-300 bg-white px-3 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
+              href="/admin/invitations"
+            >
+              Undangan
+            </Link>
             <LogoutButton />
           </div>
         </div>
