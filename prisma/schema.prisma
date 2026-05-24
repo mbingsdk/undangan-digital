@@ -1,0 +1,154 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum UserRole {
+  ADMIN
+}
+
+enum InvitationStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum AttendanceStatus {
+  ATTENDING
+  NOT_ATTENDING
+  MAYBE
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(ADMIN)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Invitation {
+  id          String           @id @default(cuid())
+  slug        String           @unique
+  title       String
+  groomName   String
+  brideName   String
+  openingText String?
+  closingText String?
+  coverImage  String?
+  musicUrl    String?
+  status      InvitationStatus @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  deletedAt   DateTime?
+
+  events      InvitationEvent[]
+  galleries   GalleryImage[]
+  rsvps       RSVP[]
+  wishes      Wish[]
+  gifts       GiftAccount[]
+
+  @@index([status])
+  @@index([deletedAt])
+  @@map("invitations")
+}
+
+model InvitationEvent {
+  id           String     @id @default(cuid())
+  invitationId String
+  title        String
+  date         DateTime
+  startTime    String
+  endTime      String?
+  venueName    String?
+  address      String?
+  mapsUrl      String?
+  sortOrder    Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@index([invitationId])
+  @@map("invitation_events")
+}
+
+model GalleryImage {
+  id           String     @id @default(cuid())
+  invitationId String
+  imageUrl     String
+  caption      String?
+  sortOrder    Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@index([invitationId])
+  @@map("gallery_images")
+}
+
+model RSVP {
+  id               String           @id @default(cuid())
+  invitationId     String
+  name             String
+  attendanceStatus AttendanceStatus
+  guestCount       Int              @default(1)
+  message          String?
+  ipAddress        String?
+  createdAt        DateTime         @default(now())
+
+  invitation       Invitation       @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@index([invitationId])
+  @@map("rsvps")
+}
+
+model Wish {
+  id           String     @id @default(cuid())
+  invitationId String
+  name         String
+  message      String
+  isVisible    Boolean    @default(true)
+  ipAddress    String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@index([invitationId])
+  @@index([isVisible])
+  @@map("wishes")
+}
+
+model GiftAccount {
+  id            String     @id @default(cuid())
+  invitationId  String
+  providerName  String
+  accountNumber String
+  accountHolder String
+  qrImage       String?
+  note          String?
+  sortOrder     Int        @default(0)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  invitation    Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@index([invitationId])
+  @@map("gift_accounts")
+}
