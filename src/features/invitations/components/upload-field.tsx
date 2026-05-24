@@ -2,6 +2,10 @@
 
 import type { ChangeEvent } from "react";
 import { useId, useRef, useState } from "react";
+import {
+  adminButtonSecondaryClass,
+  adminInputClass,
+} from "@/components/admin/admin-ui";
 
 type UploadFieldProps = {
   defaultValue?: string | null;
@@ -68,7 +72,7 @@ export function UploadField({
       </label>
       <div className="flex flex-col gap-2 sm:flex-row">
         <input
-          className="h-11 min-w-0 flex-1 border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+          className={`${adminInputClass} min-w-0 flex-1`}
           defaultValue={defaultValue ?? ""}
           id={inputId}
           name={name}
@@ -77,7 +81,7 @@ export function UploadField({
           required={required}
         />
         <label
-          className="inline-flex h-11 cursor-pointer items-center justify-center border border-stone-300 bg-white px-3 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
+          className={`${adminButtonSecondaryClass} cursor-pointer px-3`}
           htmlFor={fileInputId}
         >
           {isUploading ? "Upload..." : "Upload"}

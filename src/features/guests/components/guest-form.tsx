@@ -1,6 +1,11 @@
 "use client";
 
 import { useActionState } from "react";
+import {
+  adminButtonPrimaryClass,
+  adminInputClass,
+  adminTextareaClass,
+} from "@/components/admin/admin-ui";
 import type { GuestActionState, GuestFormValues } from "../schemas";
 
 type GuestFormProps = {
@@ -35,7 +40,7 @@ export function GuestForm({
           Nama tamu
         </label>
         <input
-          className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+          className={adminInputClass}
           defaultValue={values.name}
           id="name"
           maxLength={100}
@@ -50,7 +55,7 @@ export function GuestForm({
           Nomor WhatsApp
         </label>
         <input
-          className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+          className={adminInputClass}
           defaultValue={values.phone ?? ""}
           id="phone"
           maxLength={30}
@@ -68,7 +73,7 @@ export function GuestForm({
           Maksimal tamu
         </label>
         <input
-          className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+          className={adminInputClass}
           defaultValue={values.maxGuest ?? "1"}
           id="maxGuest"
           max="10"
@@ -85,7 +90,7 @@ export function GuestForm({
           Catatan
         </label>
         <textarea
-          className="min-h-24 w-full border border-stone-300 bg-white px-3 py-3 text-sm outline-none transition focus:border-stone-900"
+          className={adminTextareaClass}
           defaultValue={values.notes ?? ""}
           id="notes"
           maxLength={300}
@@ -102,7 +107,7 @@ export function GuestForm({
 
       <div className="sm:col-span-2">
         <button
-          className="inline-flex h-10 items-center justify-center bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
+          className={`${adminButtonPrimaryClass} h-10`}
           disabled={isPending}
           type="submit"
         >

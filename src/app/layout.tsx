@@ -7,6 +7,8 @@ import {
 } from "next/font/google";
 import "./globals.css";
 
+const appUrl = process.env.APP_URL ?? "http://localhost:3000";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -31,8 +33,18 @@ const invitationSans = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Undangan Digital",
-  description: "MVP undangan digital internal berbasis Next.js dan Prisma.",
+  applicationName: "Undangan Digital",
+  description:
+    "Undangan digital premium untuk pernikahan, lengkap dengan RSVP, ucapan, gallery, lokasi, dan share WhatsApp.",
+  metadataBase: new URL(appUrl),
+  title: {
+    default: "Undangan Digital",
+    template: "%s | Undangan Digital",
+  },
+  robots: {
+    follow: true,
+    index: true,
+  },
 };
 
 export default function RootLayout({

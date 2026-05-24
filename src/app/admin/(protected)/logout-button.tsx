@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { adminButtonSecondaryClass } from "@/components/admin/admin-ui";
 
 export function LogoutButton() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export function LogoutButton() {
   return (
     <button
       aria-label="Keluar"
-      className="inline-flex h-10 items-center justify-center gap-2 border border-stone-300 bg-white px-3 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:bg-stone-100 disabled:cursor-not-allowed disabled:text-stone-400"
+      className={`${adminButtonSecondaryClass} h-10 gap-2 px-3`}
       disabled={isLoggingOut}
       onClick={handleLogout}
       type="button"

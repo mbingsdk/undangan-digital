@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
+  AdminEmptyState,
+  AdminPageHeader,
+  AdminPanel,
+  AdminStatusBadge,
+  adminButtonDangerClass,
+  adminButtonPrimaryClass,
+  adminButtonSecondaryClass,
+} from "@/components/admin/admin-ui";
+import {
   publishInvitationAction,
   softDeleteInvitationAction,
   unpublishInvitationAction,
@@ -11,55 +20,40 @@ export const metadata: Metadata = {
   title: "Undangan | Admin Undangan Digital",
 };
 
-function formatStatus(status: string) {
-  if (status === "PUBLISHED") {
-    return "Published";
-  }
-
-  if (status === "ARCHIVED") {
-    return "Archived";
-  }
-
-  return "Draft";
-}
-
 export default async function InvitationListPage() {
   const invitations = await listInvitations();
 
   return (
     <div className="space-y-8">
-      <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-sm font-medium uppercase text-rose-700">
-            Undangan
-          </p>
-          <h1 className="mt-3 text-3xl font-semibold">Kelola undangan</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-600">
-            Buat, edit, publish, unpublish, dan arsipkan undangan customer.
-          </p>
-        </div>
+      <AdminPageHeader
+        actions={
         <Link
-          className="inline-flex h-11 items-center justify-center bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800"
+            className={adminButtonPrimaryClass}
           href="/admin/invitations/new"
         >
           Buat undangan
         </Link>
-      </section>
+        }
+        description="Buat, edit, publish, unpublish, dan arsipkan undangan customer."
+        eyebrow="Undangan"
+        title="Kelola undangan"
+      />
 
-      <section className="border border-stone-200 bg-white shadow-sm">
+      <AdminPanel>
         {invitations.length > 0 ? (
-          <ul className="divide-y divide-stone-200">
+          <ul className="-m-5 divide-y divide-stone-100 sm:-m-6">
             {invitations.map((invitation) => (
-              <li className="p-5" key={invitation.id}>
+              <li
+                className="px-5 py-5 transition hover:bg-stone-50/80 sm:px-6"
+                key={invitation.id}
+              >
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-3">
-                      <h2 className="text-lg font-semibold">
+                      <h2 className="text-lg font-semibold tracking-tight">
                         {invitation.title}
                       </h2>
-                      <span className="border border-stone-300 px-2 py-1 text-xs font-medium uppercase text-stone-700">
-                        {formatStatus(invitation.status)}
-                      </span>
+                      <AdminStatusBadge status={invitation.status} />
                     </div>
                     <p className="mt-2 text-sm text-stone-600">
                       {invitation.groomName} & {invitation.brideName}
@@ -71,7 +65,7 @@ export default async function InvitationListPage() {
 
                   <div className="flex flex-wrap gap-2">
                     <Link
-                      className="inline-flex h-10 items-center justify-center border border-stone-300 bg-white px-3 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
+                      className={`${adminButtonSecondaryClass} h-10 px-3`}
                       href={`/admin/invitations/${invitation.id}`}
                     >
                       Edit
@@ -80,7 +74,7 @@ export default async function InvitationListPage() {
                     {invitation.status === "PUBLISHED" ? (
                       <form action={unpublishInvitationAction.bind(null, invitation.id)}>
                         <button
-                          className="inline-flex h-10 items-center justify-center border border-stone-300 bg-white px-3 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
+                          className={`${adminButtonSecondaryClass} h-10 px-3`}
                           type="submit"
                         >
                           Unpublish
@@ -89,7 +83,7 @@ export default async function InvitationListPage() {
                     ) : (
                       <form action={publishInvitationAction.bind(null, invitation.id)}>
                         <button
-                          className="inline-flex h-10 items-center justify-center border border-stone-300 bg-white px-3 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
+                          className={`${adminButtonSecondaryClass} h-10 px-3`}
                           type="submit"
                         >
                           Publish
@@ -99,7 +93,7 @@ export default async function InvitationListPage() {
 
                     <form action={softDeleteInvitationAction.bind(null, invitation.id)}>
                       <button
-                        className="inline-flex h-10 items-center justify-center border border-red-200 bg-red-50 px-3 text-sm font-medium text-red-800 transition hover:bg-red-100"
+                        className={`${adminButtonDangerClass} h-10 px-3`}
                         type="submit"
                       >
                         Hapus
@@ -111,20 +105,20 @@ export default async function InvitationListPage() {
             ))}
           </ul>
         ) : (
-          <div className="px-5 py-10">
-            <h2 className="text-lg font-semibold">Belum ada undangan</h2>
-            <p className="mt-2 text-sm text-stone-600">
-              Mulai dengan membuat undangan pertama untuk customer.
-            </p>
-            <Link
-              className="mt-5 inline-flex h-11 items-center justify-center bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800"
-              href="/admin/invitations/new"
-            >
-              Buat undangan
-            </Link>
-          </div>
+          <AdminEmptyState
+            action={
+              <Link
+                className={adminButtonPrimaryClass}
+                href="/admin/invitations/new"
+              >
+                Buat undangan
+              </Link>
+            }
+            description="Mulai dengan membuat undangan pertama untuk customer."
+            title="Belum ada undangan"
+          />
         )}
-      </section>
+      </AdminPanel>
     </div>
   );
 }

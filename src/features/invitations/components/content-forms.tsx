@@ -1,6 +1,11 @@
 "use client";
 
 import { useActionState } from "react";
+import {
+  adminButtonPrimaryClass,
+  adminInputClass,
+  adminTextareaClass,
+} from "@/components/admin/admin-ui";
 import type {
   EventActionState,
   EventFormValues,
@@ -66,7 +71,7 @@ export function EventForm({
             Nama acara
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.title ?? ""}
             id="event-title"
             name="title"
@@ -80,7 +85,7 @@ export function EventForm({
             Tanggal
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.date ?? ""}
             id="event-date"
             name="date"
@@ -98,7 +103,7 @@ export function EventForm({
             Jam mulai
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.startTime ?? ""}
             id="event-start-time"
             name="startTime"
@@ -116,7 +121,7 @@ export function EventForm({
             Jam selesai
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.endTime ?? ""}
             id="event-end-time"
             name="endTime"
@@ -133,7 +138,7 @@ export function EventForm({
             Nama venue
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.venueName ?? ""}
             id="event-venue"
             name="venueName"
@@ -149,7 +154,7 @@ export function EventForm({
             Sort order
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.sortOrder ?? "0"}
             id="event-sort-order"
             min="0"
@@ -167,7 +172,7 @@ export function EventForm({
             Alamat
           </label>
           <textarea
-            className="min-h-24 w-full border border-stone-300 bg-white px-3 py-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminTextareaClass}
             defaultValue={values.address ?? ""}
             id="event-address"
             name="address"
@@ -183,7 +188,7 @@ export function EventForm({
             Google Maps URL
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.mapsUrl ?? ""}
             id="event-maps-url"
             name="mapsUrl"
@@ -194,7 +199,7 @@ export function EventForm({
       </div>
 
       <button
-        className="inline-flex h-10 items-center justify-center bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
+        className={`${adminButtonPrimaryClass} h-10`}
         disabled={isPending}
         type="submit"
       >
@@ -247,7 +252,7 @@ export function GalleryImageForm({
             Caption
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.caption ?? ""}
             id="gallery-caption"
             name="caption"
@@ -263,7 +268,7 @@ export function GalleryImageForm({
             Sort order
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.sortOrder ?? "0"}
             id="gallery-sort-order"
             min="0"
@@ -275,7 +280,7 @@ export function GalleryImageForm({
       </div>
 
       <button
-        className="inline-flex h-10 items-center justify-center bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
+        className={`${adminButtonPrimaryClass} h-10`}
         disabled={isPending}
         type="submit"
       >
@@ -317,7 +322,7 @@ export function GiftAccountForm({
             Bank/e-wallet
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.providerName ?? ""}
             id="gift-provider"
             name="providerName"
@@ -334,7 +339,7 @@ export function GiftAccountForm({
             Nama pemilik
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.accountHolder ?? ""}
             id="gift-account-holder"
             name="accountHolder"
@@ -351,7 +356,7 @@ export function GiftAccountForm({
             Nomor tujuan
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.accountNumber ?? ""}
             id="gift-account-number"
             name="accountNumber"
@@ -368,7 +373,7 @@ export function GiftAccountForm({
             Sort order
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.sortOrder ?? "0"}
             id="gift-sort-order"
             min="0"
@@ -393,7 +398,7 @@ export function GiftAccountForm({
             Catatan
           </label>
           <textarea
-            className="min-h-24 w-full border border-stone-300 bg-white px-3 py-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminTextareaClass}
             defaultValue={values.note ?? ""}
             id="gift-note"
             name="note"
@@ -403,7 +408,7 @@ export function GiftAccountForm({
       </div>
 
       <button
-        className="inline-flex h-10 items-center justify-center bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
+        className={`${adminButtonPrimaryClass} h-10`}
         disabled={isPending}
         type="submit"
       >

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdminPageHeader, AdminPanel } from "@/components/admin/admin-ui";
 import { createInvitationAction } from "@/features/invitations/actions";
 import { InvitationForm } from "@/features/invitations/components/invitation-form";
 
@@ -9,18 +10,13 @@ export const metadata: Metadata = {
 export default function NewInvitationPage() {
   return (
     <div className="space-y-8">
-      <section>
-        <p className="text-sm font-medium uppercase text-rose-700">
-          Undangan baru
-        </p>
-        <h1 className="mt-3 text-3xl font-semibold">Buat undangan</h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-600">
-          Isi data utama undangan. Detail acara, gallery, gift, RSVP, dan
-          ucapan akan ditambahkan pada sprint berikutnya.
-        </p>
-      </section>
+      <AdminPageHeader
+        description="Isi data utama undangan. Setelah tersimpan, lanjutkan dengan acara, gallery, gift, RSVP, dan tamu personal."
+        eyebrow="Undangan baru"
+        title="Buat undangan"
+      />
 
-      <section className="border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
+      <AdminPanel>
         <InvitationForm
           action={createInvitationAction}
           defaultValues={{
@@ -28,7 +24,7 @@ export default function NewInvitationPage() {
           }}
           submitLabel="Simpan undangan"
         />
-      </section>
+      </AdminPanel>
     </div>
   );
 }

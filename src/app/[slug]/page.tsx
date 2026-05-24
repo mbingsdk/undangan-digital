@@ -24,6 +24,12 @@ import { Countdown } from "@/features/invitations/components/countdown";
 import { GiftCopyButton } from "@/features/invitations/components/gift-copy-button";
 import { PublicInvitationShell } from "@/features/invitations/components/public-invitation-shell";
 import { PublicResponseForms } from "@/features/invitations/components/public-response-forms";
+import {
+  buildInvitationDescription,
+  getAbsolutePublicUrl,
+  getInvitationOgImageUrl,
+  getInvitationPublicUrl,
+} from "@/features/invitations/metadata";
 import { getPublicInvitationBySlug } from "@/features/invitations/service";
 
 type PublicInvitationPageProps = {
@@ -36,14 +42,7 @@ type PublicInvitationPageProps = {
 };
 
 function getPublicInvitationUrl(slug: string, guestCode?: string | null) {
-  const appUrl = process.env.APP_URL?.replace(/\/$/, "");
-  const path = guestCode ? `/${slug}?guest=${guestCode}` : `/${slug}`;
-
-  if (!appUrl) {
-    return path;
-  }
-
-  return `${appUrl}${path}`;
+  return getInvitationPublicUrl(slug, guestCode);
 }
 
 function getDatePart(date: Date) {
@@ -105,10 +104,80 @@ export async function generateMetadata({
   }
 
   const coupleNames = `${invitation.groomName} & ${invitation.brideName}`;
+  const firstEvent = invitation.events[0];
+  const eventDateLabel = firstEvent ? formatDate(firstEvent.date) : undefined;
+  const description = buildInvitationDescription({
+    brideName: invitation.brideName,
+    eventDateLabel,
+    groomName: invitation.groomName,
+  });
+  const publicUrl = getInvitationPublicUrl(invitation.slug);
+  const ogImageUrl = getInvitationOgImageUrl(invitation.slug);
+  const title = `${coupleNames} | ${invitation.title}`;
 
   return {
-    title: `${coupleNames} | ${invitation.title}`,
-    description: `Undangan pernikahan ${coupleNames}. Buka undangan digital untuk melihat detail acara, lokasi, gallery, dan informasi gift.`,
+    alternates: {
+      canonical: publicUrl,
+    },
+    authors: [
+      {
+        name: "Undangan Digital",
+      },
+    ],
+    category: "wedding invitation",
+    description,
+    keywords: [
+      "undangan digital",
+      "undangan pernikahan",
+      "wedding invitation",
+      invitation.groomName,
+      invitation.brideName,
+      invitation.title,
+    ],
+    openGraph: {
+      description,
+      images: [
+        {
+          alt: `Undangan pernikahan ${coupleNames}`,
+          height: 630,
+          url: ogImageUrl,
+          width: 1200,
+        },
+        ...(invitation.coverImage
+          ? [
+              {
+                alt: `Cover undangan ${coupleNames}`,
+                height: 1200,
+                url: getAbsolutePublicUrl(invitation.coverImage),
+                width: 1200,
+              },
+            ]
+          : []),
+      ],
+      locale: "id_ID",
+      siteName: "Undangan Digital",
+      title,
+      type: "website",
+      url: publicUrl,
+    },
+    robots: {
+      follow: true,
+      googleBot: {
+        follow: true,
+        index: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+      index: true,
+    },
+    title,
+    twitter: {
+      card: "summary_large_image",
+      description,
+      images: [ogImageUrl],
+      title,
+    },
   };
 }
 

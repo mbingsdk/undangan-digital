@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
+  AdminEmptyState,
+  AdminMetricCard,
+  AdminPageHeader,
+  AdminPanel,
+  adminButtonSecondaryClass,
+} from "@/components/admin/admin-ui";
+import {
   getInvitationById,
   getInvitationRsvps,
 } from "@/features/invitations/service";
@@ -65,42 +72,40 @@ export default async function AdminRsvpsPage({ params }: AdminRsvpsPageProps) {
 
   return (
     <div className="space-y-8">
-      <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-sm font-medium uppercase text-rose-700">RSVP</p>
-          <h1 className="mt-3 text-3xl font-semibold">{invitation.title}</h1>
-          <p className="mt-3 text-sm text-stone-600">/{invitation.slug}</p>
-        </div>
+      <AdminPageHeader
+        actions={
         <Link
-          className="inline-flex h-10 items-center justify-center border border-stone-300 bg-white px-3 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
+            className={`${adminButtonSecondaryClass} h-10 px-3`}
           href={`/admin/invitations/${invitation.id}`}
         >
           Kembali ke undangan
         </Link>
-      </section>
+        }
+        description={`/${invitation.slug}`}
+        eyebrow="RSVP"
+        title={invitation.title}
+      />
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {metrics.map((metric) => (
-          <article
-            className="border border-stone-200 bg-white p-5 shadow-sm"
+          <AdminMetricCard
             key={metric.label}
-          >
-            <p className="text-sm text-stone-600">{metric.label}</p>
-            <p className="mt-3 text-3xl font-semibold">{metric.value}</p>
-          </article>
+            label={metric.label}
+            value={metric.value}
+          />
         ))}
       </section>
 
-      <section className="border border-stone-200 bg-white shadow-sm">
+      <AdminPanel title="Daftar RSVP">
         {rsvps.length > 0 ? (
-          <ul className="divide-y divide-stone-200">
+          <ul className="-m-5 divide-y divide-stone-100 sm:-m-6">
             {rsvps.map((rsvp) => (
-              <li className="p-5" key={rsvp.id}>
+              <li className="px-5 py-5 sm:px-6" key={rsvp.id}>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <h2 className="font-semibold">{rsvp.name}</h2>
                     <p className="mt-1 text-sm text-stone-600">
-                      {getAttendanceLabel(rsvp.attendanceStatus)} ·{" "}
+                      {getAttendanceLabel(rsvp.attendanceStatus)} -{" "}
                       {rsvp.guestCount} tamu
                     </p>
                     {rsvp.guest ? (
@@ -122,14 +127,12 @@ export default async function AdminRsvpsPage({ params }: AdminRsvpsPageProps) {
             ))}
           </ul>
         ) : (
-          <div className="px-5 py-10">
-            <h2 className="text-lg font-semibold">Belum ada RSVP</h2>
-            <p className="mt-2 text-sm text-stone-600">
-              Data akan muncul setelah tamu mengirim konfirmasi kehadiran.
-            </p>
-          </div>
+          <AdminEmptyState
+            description="Data akan muncul setelah tamu mengirim konfirmasi kehadiran."
+            title="Belum ada RSVP"
+          />
         )}
-      </section>
+      </AdminPanel>
     </div>
   );
 }

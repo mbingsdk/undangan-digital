@@ -110,11 +110,11 @@ export const invitationFormSchema = z.object({
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
       "Slug hanya boleh berisi huruf kecil, angka, dan tanda hubung.",
     ),
-  groomName: z.string().trim().min(1, "Nama mempelai pria wajib diisi.").max(120),
+  groomName: z.string().trim().min(1, "Nama mempelai wanita wajib diisi.").max(120),
   brideName: z
     .string()
     .trim()
-    .min(1, "Nama mempelai wanita wajib diisi.")
+    .min(1, "Nama mempelai pria wajib diisi.")
     .max(120),
   openingText: optionalTextSchema,
   closingText: optionalTextSchema,

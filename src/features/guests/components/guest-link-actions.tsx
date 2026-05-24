@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { adminButtonSecondaryClass } from "@/components/admin/admin-ui";
 
 type GuestLinkActionsProps = {
   brideName: string;
@@ -70,14 +71,14 @@ export function GuestLinkActions({
   return (
     <div className="flex flex-wrap gap-2">
       <button
-        className="inline-flex h-9 items-center justify-center border border-stone-300 bg-white px-3 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
+        className={`${adminButtonSecondaryClass} h-9 px-3`}
         onClick={copyLink}
         type="button"
       >
         {copied ? "Link tersalin" : "Copy link"}
       </button>
       <a
-        className="inline-flex h-9 items-center justify-center bg-emerald-700 px-3 text-sm font-medium text-white transition hover:bg-emerald-800"
+        className="inline-flex h-9 items-center justify-center rounded-xl bg-emerald-700 px-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-800 hover:shadow-md"
         href={whatsappHref}
         rel="noopener noreferrer"
         target="_blank"

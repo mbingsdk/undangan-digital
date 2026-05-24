@@ -3,6 +3,13 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import {
+  adminButtonPrimaryClass,
+  adminButtonSecondaryClass,
+  adminInputClass,
+  adminSelectClass,
+  adminTextareaClass,
+} from "@/components/admin/admin-ui";
+import {
   invitationStatuses,
   type InvitationActionState,
   type InvitationFormInput,
@@ -53,7 +60,7 @@ export function InvitationForm({
             Judul undangan
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.title ?? ""}
             id="title"
             name="title"
@@ -67,7 +74,7 @@ export function InvitationForm({
             Slug
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.slug ?? ""}
             id="slug"
             name="slug"
@@ -85,7 +92,7 @@ export function InvitationForm({
             Nama mempelai pria
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.groomName ?? ""}
             id="groomName"
             name="groomName"
@@ -102,7 +109,7 @@ export function InvitationForm({
             Nama mempelai wanita
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.brideName ?? ""}
             id="brideName"
             name="brideName"
@@ -127,7 +134,7 @@ export function InvitationForm({
             Music URL
           </label>
           <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminInputClass}
             defaultValue={values.musicUrl ?? ""}
             id="musicUrl"
             name="musicUrl"
@@ -144,7 +151,7 @@ export function InvitationForm({
             Teks pembuka
           </label>
           <textarea
-            className="min-h-28 w-full border border-stone-300 bg-white px-3 py-3 text-sm outline-none transition focus:border-stone-900"
+            className={`${adminTextareaClass} min-h-28`}
             defaultValue={values.openingText ?? ""}
             id="openingText"
             name="openingText"
@@ -160,7 +167,7 @@ export function InvitationForm({
             Teks penutup
           </label>
           <textarea
-            className="min-h-28 w-full border border-stone-300 bg-white px-3 py-3 text-sm outline-none transition focus:border-stone-900"
+            className={`${adminTextareaClass} min-h-28`}
             defaultValue={values.closingText ?? ""}
             id="closingText"
             name="closingText"
@@ -173,7 +180,7 @@ export function InvitationForm({
             Status
           </label>
           <select
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+            className={adminSelectClass}
             defaultValue={values.status ?? "DRAFT"}
             id="status"
             name="status"
@@ -190,13 +197,13 @@ export function InvitationForm({
 
       <div className="flex flex-col-reverse gap-3 border-t border-stone-200 pt-6 sm:flex-row sm:justify-end">
         <Link
-          className="inline-flex h-11 items-center justify-center border border-stone-300 bg-white px-4 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
+          className={adminButtonSecondaryClass}
           href="/admin/invitations"
         >
           Batal
         </Link>
         <button
-          className="inline-flex h-11 items-center justify-center bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
+          className={adminButtonPrimaryClass}
           disabled={isPending}
           type="submit"
         >

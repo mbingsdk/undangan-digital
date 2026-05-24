@@ -3,6 +3,10 @@
 import type { FormEvent } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  adminButtonPrimaryClass,
+  adminInputClass,
+} from "@/components/admin/admin-ui";
 
 type LoginResponse = {
   error?: string;
@@ -69,7 +73,7 @@ export function LoginForm({ nextPath }: LoginFormProps) {
         </label>
         <input
           autoComplete="email"
-          className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+          className={adminInputClass}
           id="email"
           name="email"
           required
@@ -89,7 +93,7 @@ export function LoginForm({ nextPath }: LoginFormProps) {
         </label>
         <input
           autoComplete="current-password"
-          className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
+          className={adminInputClass}
           id="password"
           name="password"
           required
@@ -107,7 +111,7 @@ export function LoginForm({ nextPath }: LoginFormProps) {
       ) : null}
 
       <button
-        className="h-11 w-full bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
+        className={`${adminButtonPrimaryClass} w-full`}
         disabled={isSubmitting}
         type="submit"
       >

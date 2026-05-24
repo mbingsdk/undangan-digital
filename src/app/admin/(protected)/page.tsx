@@ -1,5 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import {
+  AdminEmptyState,
+  AdminMetricCard,
+  AdminPageHeader,
+  AdminPanel,
+  AdminStatusBadge,
+  adminButtonPrimaryClass,
+  adminButtonSecondaryClass,
+} from "@/components/admin/admin-ui";
 import { getInvitationDashboardSummary } from "@/features/invitations/service";
 
 export const metadata: Metadata = {
@@ -36,52 +45,44 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="space-y-8">
-      <section>
-        <p className="text-sm font-medium uppercase text-rose-700">
-          Dashboard admin
-        </p>
-        <h1 className="mt-3 text-3xl font-semibold">Ringkasan operasional</h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-600">
-          Pantau data undangan dan lanjutkan pekerjaan admin dari satu tempat.
-        </p>
-        <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+      <AdminPageHeader
+        actions={
+          <>
           <Link
-            className="inline-flex h-11 items-center justify-center bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800"
+              className={adminButtonPrimaryClass}
             href="/admin/invitations/new"
           >
             Buat undangan
           </Link>
           <Link
-            className="inline-flex h-11 items-center justify-center border border-stone-300 bg-white px-4 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
+              className={adminButtonSecondaryClass}
             href="/admin/invitations"
           >
             Lihat daftar undangan
           </Link>
-        </div>
-      </section>
+          </>
+        }
+        description="Pantau data undangan dan lanjutkan pekerjaan admin dari satu tempat."
+        eyebrow="Dashboard admin"
+        title="Ringkasan operasional"
+      />
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {metrics.map((metric) => (
-          <article
-            className="border border-stone-200 bg-white p-5 shadow-sm"
+          <AdminMetricCard
             key={metric.label}
-          >
-            <p className="text-sm text-stone-600">{metric.label}</p>
-            <p className="mt-3 text-3xl font-semibold">{metric.value}</p>
-          </article>
+            label={metric.label}
+            value={metric.value}
+          />
         ))}
       </section>
 
-      <section className="border border-stone-200 bg-white shadow-sm">
-        <div className="border-b border-stone-200 px-5 py-4">
-          <h2 className="text-lg font-semibold">Undangan terbaru</h2>
-        </div>
-
+      <AdminPanel title="Undangan terbaru">
         {latestInvitations.length > 0 ? (
-          <ul className="divide-y divide-stone-200">
+          <ul className="-m-5 divide-y divide-stone-100 sm:-m-6">
             {latestInvitations.map((invitation) => (
               <li
-                className="flex flex-col gap-2 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+                className="flex flex-col gap-3 px-5 py-4 transition hover:bg-stone-50/80 sm:flex-row sm:items-center sm:justify-between sm:px-6"
                 key={invitation.id}
               >
                 <div>
@@ -95,18 +96,17 @@ export default async function AdminDashboardPage() {
                     /{invitation.slug}
                   </p>
                 </div>
-                <span className="w-fit border border-stone-300 px-2 py-1 text-xs font-medium uppercase text-stone-700">
-                  {invitation.status}
-                </span>
+                <AdminStatusBadge status={invitation.status} />
               </li>
             ))}
           </ul>
         ) : (
-          <p className="px-5 py-8 text-sm text-stone-600">
-            Belum ada undangan. Data akan muncul setelah Sprint 2 selesai.
-          </p>
+          <AdminEmptyState
+            description="Buat undangan pertama untuk mulai mengisi data customer."
+            title="Belum ada undangan"
+          />
         )}
-      </section>
+      </AdminPanel>
     </div>
   );
 }
