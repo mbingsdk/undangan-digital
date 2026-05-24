@@ -7,6 +7,7 @@ import {
   type InvitationActionState,
   type InvitationFormInput,
 } from "../schemas";
+import { UploadField } from "./upload-field";
 
 type InvitationFormProps = {
   action: (
@@ -110,22 +111,13 @@ export function InvitationForm({
           <FieldError message={state.errors?.brideName?.[0]} />
         </div>
 
-        <div className="space-y-2">
-          <label
-            className="text-sm font-medium text-stone-800"
-            htmlFor="coverImage"
-          >
-            Cover image URL
-          </label>
-          <input
-            className="h-11 w-full border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-stone-900"
-            defaultValue={values.coverImage ?? ""}
-            id="coverImage"
-            name="coverImage"
-            placeholder="/uploads/cover.jpg"
-          />
-          <FieldError message={state.errors?.coverImage?.[0]} />
-        </div>
+        <UploadField
+          defaultValue={values.coverImage}
+          error={state.errors?.coverImage?.[0]}
+          label="Cover image URL"
+          name="coverImage"
+          placeholder="/uploads/cover.jpg"
+        />
 
         <div className="space-y-2">
           <label

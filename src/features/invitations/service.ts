@@ -1,5 +1,10 @@
 import { prisma } from "@/lib/prisma";
-import type { InvitationFormInput } from "./schemas";
+import type {
+  EventFormInput,
+  GalleryImageFormInput,
+  GiftAccountFormInput,
+  InvitationFormInput,
+} from "./schemas";
 
 export class InvitationSlugConflictError extends Error {
   constructor() {
@@ -12,6 +17,13 @@ export class InvitationNotFoundError extends Error {
   constructor() {
     super("Undangan tidak ditemukan.");
     this.name = "InvitationNotFoundError";
+  }
+}
+
+export class InvitationContentNotFoundError extends Error {
+  constructor() {
+    super("Konten undangan tidak ditemukan.");
+    this.name = "InvitationContentNotFoundError";
   }
 }
 
@@ -134,6 +146,47 @@ export async function getInvitationById(id: string) {
   });
 }
 
+export async function getInvitationEditorData(id: string) {
+  return prisma.invitation.findFirst({
+    include: {
+      events: {
+        orderBy: [
+          {
+            sortOrder: "asc",
+          },
+          {
+            date: "asc",
+          },
+        ],
+      },
+      galleries: {
+        orderBy: [
+          {
+            sortOrder: "asc",
+          },
+          {
+            createdAt: "asc",
+          },
+        ],
+      },
+      gifts: {
+        orderBy: [
+          {
+            sortOrder: "asc",
+          },
+          {
+            createdAt: "asc",
+          },
+        ],
+      },
+    },
+    where: {
+      id,
+      deletedAt: null,
+    },
+  });
+}
+
 export async function createInvitation(input: InvitationFormInput) {
   await assertUniqueSlug(input.slug);
 
@@ -215,6 +268,186 @@ export async function unpublishInvitation(id: string) {
     },
     where: {
       id,
+    },
+  });
+}
+
+async function assertInvitationEventExists(invitationId: string, eventId: string) {
+  const event = await prisma.invitationEvent.findFirst({
+    select: {
+      id: true,
+    },
+    where: {
+      id: eventId,
+      invitationId,
+      invitation: {
+        deletedAt: null,
+      },
+    },
+  });
+
+  if (!event) {
+    throw new InvitationContentNotFoundError();
+  }
+}
+
+async function assertGalleryImageExists(invitationId: string, imageId: string) {
+  const image = await prisma.galleryImage.findFirst({
+    select: {
+      id: true,
+    },
+    where: {
+      id: imageId,
+      invitationId,
+      invitation: {
+        deletedAt: null,
+      },
+    },
+  });
+
+  if (!image) {
+    throw new InvitationContentNotFoundError();
+  }
+}
+
+async function assertGiftAccountExists(invitationId: string, giftId: string) {
+  const gift = await prisma.giftAccount.findFirst({
+    select: {
+      id: true,
+    },
+    where: {
+      id: giftId,
+      invitationId,
+      invitation: {
+        deletedAt: null,
+      },
+    },
+  });
+
+  if (!gift) {
+    throw new InvitationContentNotFoundError();
+  }
+}
+
+export async function createInvitationEvent(
+  invitationId: string,
+  input: EventFormInput,
+) {
+  await assertInvitationExists(invitationId);
+
+  return prisma.invitationEvent.create({
+    data: {
+      ...input,
+      invitationId,
+    },
+  });
+}
+
+export async function updateInvitationEvent(
+  invitationId: string,
+  eventId: string,
+  input: EventFormInput,
+) {
+  await assertInvitationEventExists(invitationId, eventId);
+
+  return prisma.invitationEvent.update({
+    data: input,
+    where: {
+      id: eventId,
+    },
+  });
+}
+
+export async function deleteInvitationEvent(
+  invitationId: string,
+  eventId: string,
+) {
+  await assertInvitationEventExists(invitationId, eventId);
+
+  return prisma.invitationEvent.delete({
+    where: {
+      id: eventId,
+    },
+  });
+}
+
+export async function createGalleryImage(
+  invitationId: string,
+  input: GalleryImageFormInput,
+) {
+  await assertInvitationExists(invitationId);
+
+  return prisma.galleryImage.create({
+    data: {
+      ...input,
+      invitationId,
+    },
+  });
+}
+
+export async function updateGalleryImage(
+  invitationId: string,
+  imageId: string,
+  input: GalleryImageFormInput,
+) {
+  await assertGalleryImageExists(invitationId, imageId);
+
+  return prisma.galleryImage.update({
+    data: input,
+    where: {
+      id: imageId,
+    },
+  });
+}
+
+export async function deleteGalleryImage(
+  invitationId: string,
+  imageId: string,
+) {
+  await assertGalleryImageExists(invitationId, imageId);
+
+  return prisma.galleryImage.delete({
+    where: {
+      id: imageId,
+    },
+  });
+}
+
+export async function createGiftAccount(
+  invitationId: string,
+  input: GiftAccountFormInput,
+) {
+  await assertInvitationExists(invitationId);
+
+  return prisma.giftAccount.create({
+    data: {
+      ...input,
+      invitationId,
+    },
+  });
+}
+
+export async function updateGiftAccount(
+  invitationId: string,
+  giftId: string,
+  input: GiftAccountFormInput,
+) {
+  await assertGiftAccountExists(invitationId, giftId);
+
+  return prisma.giftAccount.update({
+    data: input,
+    where: {
+      id: giftId,
+    },
+  });
+}
+
+export async function deleteGiftAccount(invitationId: string, giftId: string) {
+  await assertGiftAccountExists(invitationId, giftId);
+
+  return prisma.giftAccount.delete({
+    where: {
+      id: giftId,
     },
   });
 }
