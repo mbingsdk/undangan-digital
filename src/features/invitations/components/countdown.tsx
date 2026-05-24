@@ -19,7 +19,12 @@ function getRemaining(targetDate: string) {
 }
 
 export function Countdown({ targetDate }: CountdownProps) {
-  const [remaining, setRemaining] = useState(() => getRemaining(targetDate));
+  const [remaining, setRemaining] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
   const items = useMemo(
     () => [
       ["Hari", remaining.days],
@@ -31,24 +36,32 @@ export function Countdown({ targetDate }: CountdownProps) {
   );
 
   useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      setRemaining(getRemaining(targetDate));
+    }, 0);
+
     const interval = window.setInterval(() => {
       setRemaining(getRemaining(targetDate));
     }, 1000);
 
-    return () => window.clearInterval(interval);
+    return () => {
+      window.clearTimeout(timeout);
+      window.clearInterval(interval);
+    };
   }, [targetDate]);
 
   return (
-    <div className="grid grid-cols-4 gap-0 border border-zinc-100 bg-white">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
       {items.map(([label, value]) => (
         <div
-          className="border-r border-zinc-100 px-2 py-5 text-center last:border-r-0"
+          className="invitation-tilt flex min-h-28 flex-col items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] px-3 py-5 text-center shadow-2xl shadow-black/20 backdrop-blur-xl"
+          data-invitation-reveal="pop"
           key={label}
         >
-          <p className="font-serif text-3xl font-light tabular-nums text-zinc-800 sm:text-5xl">
+          <p className="font-serif text-4xl font-medium tabular-nums text-amber-100 sm:text-5xl">
             {String(value).padStart(2, "0")}
           </p>
-          <p className="mt-2 text-[0.62rem] font-medium uppercase tracking-[0.22em] text-zinc-400">
+          <p className="mt-2 text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-amber-200/55">
             {label}
           </p>
         </div>

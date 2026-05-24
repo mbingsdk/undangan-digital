@@ -24,3 +24,474 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.invitation-experience {
+  font-family: var(--font-invitation-sans), Arial, Helvetica, sans-serif;
+}
+
+.invitation-experience .font-serif {
+  font-family: var(--font-invitation-serif), Georgia, serif;
+}
+
+@keyframes invitation-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -18px, 0) rotate(4deg);
+  }
+}
+
+@keyframes invitation-drift {
+  0% {
+    transform: translate3d(-8%, 4%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(7%, -5%, 0) scale(1.08);
+  }
+  100% {
+    transform: translate3d(-8%, 4%, 0) scale(1);
+  }
+}
+
+@keyframes invitation-shimmer {
+  0% {
+    transform: translateX(-140%) skewX(-18deg);
+  }
+  100% {
+    transform: translateX(220%) skewX(-18deg);
+  }
+}
+
+@keyframes invitation-rise {
+  from {
+    opacity: 0;
+    transform: translateY(26px) scale(0.98);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes invitation-spin-soft {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes invitation-scroll-rise {
+  from {
+    opacity: 0;
+    transform: translateY(54px) scale(0.96);
+    filter: blur(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes invitation-scroll-left {
+  from {
+    opacity: 0;
+    transform: translateX(-44px) rotateY(8deg);
+    filter: blur(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) rotateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes invitation-scroll-right {
+  from {
+    opacity: 0;
+    transform: translateX(44px) rotateY(-8deg);
+    filter: blur(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) rotateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes invitation-scroll-zoom {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(28px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes invitation-kenburns {
+  from {
+    transform: scale(1.06) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.12) translate3d(-1.5%, -1%, 0);
+  }
+  to {
+    transform: scale(1.08) translate3d(1%, 1%, 0);
+  }
+}
+
+@keyframes invitation-soft-pulse {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes invitation-reveal-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 68px, 0) scale(0.94);
+    filter: blur(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes invitation-reveal-left {
+  from {
+    opacity: 0;
+    transform: translate3d(-64px, 24px, 0) rotateY(14deg) scale(0.94);
+    filter: blur(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes invitation-reveal-right {
+  from {
+    opacity: 0;
+    transform: translate3d(64px, 24px, 0) rotateY(-14deg) scale(0.94);
+    filter: blur(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes invitation-reveal-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(38px) scale(0.78) rotate(-2deg);
+    filter: blur(14px);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1.04) rotate(1deg);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes invitation-spark-fall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -14vh, 0) rotate(0deg);
+  }
+  12% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--spark-x, 28px), 118vh, 0) rotate(240deg);
+  }
+}
+
+@keyframes invitation-ribbon-dance {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-8deg);
+  }
+  50% {
+    transform: translate3d(14px, -22px, 0) rotate(8deg);
+  }
+}
+
+@keyframes invitation-scene-in {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 34px, 80px) scale(0.88) rotateX(7deg);
+    filter: blur(18px);
+  }
+  65% {
+    opacity: 1;
+    transform: translate3d(0, -4px, 0) scale(1.025) rotateX(0);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotateX(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes invitation-text-cascade {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes invitation-frame-breathe {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes invitation-orbit {
+  from {
+    transform: rotate(0deg) translateX(8px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(8px) rotate(-360deg);
+  }
+}
+
+@keyframes invitation-progress-sweep {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.invitation-float {
+  animation: invitation-float 7s ease-in-out infinite;
+}
+
+.invitation-drift {
+  animation: invitation-drift 12s ease-in-out infinite;
+}
+
+.invitation-rise {
+  animation: invitation-rise 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.invitation-shimmer::after {
+  animation: invitation-shimmer 3.4s ease-in-out infinite;
+}
+
+.invitation-perspective {
+  perspective: 1200px;
+}
+
+.invitation-tilt {
+  transform: rotateX(0deg) rotateY(0deg) translateZ(0);
+  transition:
+    transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 400ms ease,
+    background-color 400ms ease;
+}
+
+.invitation-tilt:hover {
+  transform: rotateX(2deg) rotateY(-3deg) translateY(-4px);
+}
+
+.invitation-kenburns {
+  animation: invitation-kenburns 18s ease-in-out infinite alternate;
+}
+
+.invitation-pulse {
+  animation: invitation-soft-pulse 4s ease-in-out infinite;
+}
+
+[data-invitation-reveal] {
+  opacity: 0;
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+}
+
+[data-invitation-reveal].is-visible {
+  animation-duration: 980ms;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-invitation-reveal="up"].is-visible {
+  animation-name: invitation-reveal-up;
+}
+
+[data-invitation-reveal="left"].is-visible {
+  animation-name: invitation-reveal-left;
+}
+
+[data-invitation-reveal="right"].is-visible {
+  animation-name: invitation-reveal-right;
+}
+
+[data-invitation-reveal="pop"].is-visible {
+  animation-name: invitation-reveal-pop;
+}
+
+.invitation-spark {
+  animation: invitation-spark-fall var(--spark-duration, 9s) linear infinite;
+}
+
+.invitation-ribbon {
+  animation: invitation-ribbon-dance 8s ease-in-out infinite;
+}
+
+.invitation-scene {
+  animation: invitation-scene-in 1100ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-style: preserve-3d;
+}
+
+.invitation-scene-line {
+  animation: invitation-text-cascade 850ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.invitation-frame {
+  animation: invitation-frame-breathe 4.8s ease-in-out infinite;
+}
+
+.invitation-orbit {
+  animation: invitation-orbit 8s linear infinite;
+}
+
+.invitation-progress-sweep {
+  animation: invitation-progress-sweep 2600ms linear both;
+  transform-origin: left;
+}
+
+.invitation-onboarding-track {
+  transform-style: preserve-3d;
+  transition:
+    transform 1150ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 900ms ease;
+  will-change: transform;
+}
+
+.invitation-onboarding-panel {
+  opacity: 0.24;
+  transform: scale(0.9) rotateY(10deg);
+  filter: blur(12px);
+  transition:
+    opacity 850ms ease,
+    transform 1150ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 850ms ease;
+}
+
+.invitation-onboarding-panel.is-active {
+  opacity: 1;
+  transform: scale(1) rotateY(0deg);
+  filter: blur(0);
+}
+
+.invitation-onboarding-panel .invitation-scene-line,
+.invitation-onboarding-panel .invitation-progress-sweep {
+  animation-play-state: paused;
+}
+
+.invitation-onboarding-panel.is-active .invitation-scene-line,
+.invitation-onboarding-panel.is-active .invitation-progress-sweep {
+  animation-play-state: running;
+}
+
+@supports (animation-timeline: view()) {
+  .invitation-scroll-rise,
+  .invitation-scroll-left,
+  .invitation-scroll-right,
+  .invitation-scroll-zoom {
+    animation-duration: 1ms;
+    animation-fill-mode: both;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    animation-timeline: view();
+    animation-range: entry 8% cover 34%;
+  }
+
+  .invitation-scroll-rise {
+    animation-name: invitation-scroll-rise;
+  }
+
+  .invitation-scroll-left {
+    animation-name: invitation-scroll-left;
+  }
+
+  .invitation-scroll-right {
+    animation-name: invitation-scroll-right;
+  }
+
+  .invitation-scroll-zoom {
+    animation-name: invitation-scroll-zoom;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .invitation-float,
+  .invitation-drift,
+  .invitation-rise,
+  .invitation-shimmer::after,
+  .invitation-kenburns,
+  .invitation-pulse,
+  .invitation-spark,
+  .invitation-ribbon,
+  .invitation-scene,
+  .invitation-scene-line,
+  .invitation-frame,
+  .invitation-orbit,
+  .invitation-progress-sweep,
+  .invitation-onboarding-track,
+  .invitation-onboarding-panel,
+  [data-invitation-reveal],
+  [data-invitation-reveal].is-visible,
+  .invitation-scroll-rise,
+  .invitation-scroll-left,
+  .invitation-scroll-right,
+  .invitation-scroll-zoom {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  .invitation-tilt,
+  .invitation-tilt:hover {
+    transform: none;
+  }
+}

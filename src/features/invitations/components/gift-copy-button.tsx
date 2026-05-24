@@ -17,7 +17,7 @@ export function GiftCopyButton({ accountNumber }: GiftCopyButtonProps) {
 
   return (
     <button
-      className="inline-flex h-10 items-center justify-center border border-zinc-200 bg-white px-4 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-zinc-600 transition hover:border-amber-700 hover:text-amber-800"
+      className="inline-flex h-11 items-center justify-center rounded-full border border-amber-100/20 bg-amber-100/10 px-5 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-amber-50 transition hover:border-amber-100/40 hover:bg-amber-100/15"
       onClick={copyAccountNumber}
       type="button"
     >

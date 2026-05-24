@@ -35,7 +35,7 @@ function FieldError({ children }: { children?: string }) {
     return null;
   }
 
-  return <p className="text-sm text-red-700">{children}</p>;
+  return <p className="mt-2 text-sm text-rose-200">{children}</p>;
 }
 
 function Notice({
@@ -47,10 +47,10 @@ function Notice({
 }) {
   return (
     <p
-      className={`border px-4 py-3 text-sm ${
+      className={`rounded-2xl border px-4 py-3 text-sm ${
         tone === "success"
-          ? "border-emerald-100 bg-emerald-50 text-emerald-900"
-          : "border-red-100 bg-red-50 text-red-800"
+          ? "border-emerald-200/15 bg-emerald-300/10 text-emerald-100"
+          : "border-rose-200/15 bg-rose-300/10 text-rose-100"
       }`}
     >
       {children}
@@ -59,9 +59,9 @@ function Notice({
 }
 
 const inputClass =
-  "w-full border-0 border-b border-zinc-300 bg-transparent px-0 py-3 text-sm text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-amber-700";
+  "w-full rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-amber-50 outline-none transition placeholder:text-slate-500 focus:border-amber-200/45 focus:bg-white/[0.09]";
 const textareaClass =
-  "w-full resize-none border-0 border-b border-zinc-300 bg-transparent px-0 py-3 text-sm leading-6 text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-amber-700";
+  "w-full resize-none rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm leading-6 text-amber-50 outline-none transition placeholder:text-slate-500 focus:border-amber-200/45 focus:bg-white/[0.09]";
 
 export function PublicResponseForms({
   guestCode,
@@ -160,207 +160,236 @@ export function PublicResponseForms({
   }
 
   return (
-    <section className="bg-[#f9f9f7] px-5 py-24 sm:px-8">
-      <div className="mx-auto max-w-5xl">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="text-xs font-medium uppercase tracking-[0.35em] text-zinc-500">
+    <section className="relative overflow-hidden bg-slate-950 px-5 py-28 sm:px-8">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(251,191,36,0.12),transparent_30%),radial-gradient(circle_at_90%_60%,rgba(244,114,182,0.1),transparent_34%)]" />
+
+      <div className="relative z-10 mx-auto max-w-6xl">
+        <div className="mb-14 max-w-2xl" data-invitation-reveal="up">
+          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-amber-200/60">
             RSVP & Ucapan
           </p>
-          <h2 className="mt-4 font-serif text-3xl font-light text-zinc-800 sm:text-4xl">
-            Konfirmasi Kehadiran
+          <h2 className="mt-4 font-serif text-4xl font-medium text-amber-50 sm:text-6xl">
+            Hadir di Hari Bahagia
           </h2>
-          <p className="mx-auto mt-5 max-w-lg text-sm font-light leading-7 text-zinc-500">
-            Merupakan suatu kehormatan bagi kami apabila Bapak/Ibu/Saudara/i
-            berkenan hadir dan mengirimkan doa terbaik.
+          <p className="mt-5 max-w-xl text-sm font-light leading-7 text-slate-300">
+            Konfirmasi kehadiran dan tinggalkan doa terbaik. Setiap ucapan akan
+            menjadi bagian dari kenangan hari ini.
           </p>
         </div>
 
-        <div className="mt-14 grid gap-0 border border-zinc-200 bg-white md:grid-cols-2">
-          <form
-            className="border-b border-zinc-200 p-8 md:border-b-0 md:border-r md:p-12"
-            onSubmit={submitRsvp}
-          >
-            <p className="text-xs font-medium uppercase tracking-[0.28em] text-amber-800">
-              RSVP
-            </p>
-            <h3 className="mt-3 font-serif text-2xl font-light text-zinc-800">
-              Kehadiran Anda
-            </h3>
+        <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+          <div className="invitation-perspective" data-invitation-reveal="left">
+            <form
+              className="invitation-tilt rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-black/25 backdrop-blur-xl sm:p-8"
+              onSubmit={submitRsvp}
+            >
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-200/60">
+                Konfirmasi
+              </p>
+              <h3 className="mt-3 font-serif text-3xl text-amber-50">
+                RSVP
+              </h3>
 
-            <div className="mt-8 space-y-7">
-              <div>
-                <input
-                  className={inputClass}
-                  defaultValue={guestName ?? ""}
-                  id="rsvp-name"
-                  maxLength={80}
-                  name="name"
-                  placeholder="Nama Lengkap"
-                  required
-                />
-                <FieldError>{getFieldError(rsvpFields, "name")}</FieldError>
-              </div>
-
-              <div>
-                <p className="mb-4 text-sm text-zinc-500">
-                  Apakah Anda akan hadir?
-                </p>
-                <div className="grid gap-3 sm:grid-cols-3">
-                  {attendanceOptions.map(([value, label]) => (
-                    <label
-                      className={`cursor-pointer border px-3 py-3 text-center text-[0.68rem] font-semibold uppercase tracking-[0.16em] transition ${
-                        attendanceStatus === value
-                          ? "border-amber-700 bg-amber-50 text-amber-900"
-                          : "border-zinc-200 text-zinc-500 hover:border-zinc-300"
-                      }`}
-                      key={value}
-                    >
-                      <input
-                        checked={attendanceStatus === value}
-                        className="sr-only"
-                        name="attendanceStatus"
-                        onChange={() => setAttendanceStatus(value)}
-                        type="radio"
-                        value={value}
-                      />
-                      {label}
-                    </label>
-                  ))}
+              <div className="mt-8 space-y-6">
+                <div>
+                  <label className="mb-2 block text-xs font-medium uppercase tracking-[0.18em] text-amber-100/65">
+                    Nama
+                  </label>
+                  <input
+                    className={inputClass}
+                    defaultValue={guestName ?? ""}
+                    id="rsvp-name"
+                    maxLength={80}
+                    name="name"
+                    placeholder="Nama lengkap"
+                    required
+                  />
+                  <FieldError>{getFieldError(rsvpFields, "name")}</FieldError>
                 </div>
-                <FieldError>
-                  {getFieldError(rsvpFields, "attendanceStatus")}
-                </FieldError>
-              </div>
 
-              {attendanceStatus === "ATTENDING" ? (
+                <div>
+                  <p className="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-amber-100/65">
+                    Kehadiran
+                  </p>
+                  <div className="grid gap-2 sm:grid-cols-3">
+                    {attendanceOptions.map(([value, label]) => (
+                      <label
+                        className={`cursor-pointer rounded-2xl border px-3 py-3 text-center text-[0.68rem] font-semibold uppercase tracking-[0.15em] transition ${
+                          attendanceStatus === value
+                            ? "border-amber-200/45 bg-amber-200/12 text-amber-50"
+                            : "border-white/10 bg-white/[0.04] text-slate-400 hover:border-white/20"
+                        }`}
+                        key={value}
+                      >
+                        <input
+                          checked={attendanceStatus === value}
+                          className="sr-only"
+                          name="attendanceStatus"
+                          onChange={() => setAttendanceStatus(value)}
+                          type="radio"
+                          value={value}
+                        />
+                        {label}
+                      </label>
+                    ))}
+                  </div>
+                  <FieldError>
+                    {getFieldError(rsvpFields, "attendanceStatus")}
+                  </FieldError>
+                </div>
+
+                {attendanceStatus === "ATTENDING" ? (
+                  <div>
+                    <label className="mb-2 block text-xs font-medium uppercase tracking-[0.18em] text-amber-100/65">
+                      Jumlah tamu
+                    </label>
+                    <input
+                      className={inputClass}
+                      defaultValue="1"
+                      id="guest-count"
+                      max={maxGuest ?? 10}
+                      min="1"
+                      name="guestCount"
+                      type="number"
+                    />
+                    {maxGuest ? (
+                      <p className="mt-2 text-xs text-slate-400">
+                        Maksimal {maxGuest} tamu untuk link undangan ini.
+                      </p>
+                    ) : null}
+                    <FieldError>
+                      {getFieldError(rsvpFields, "guestCount")}
+                    </FieldError>
+                  </div>
+                ) : (
+                  <input name="guestCount" type="hidden" value="1" />
+                )}
+
+                <div>
+                  <label className="mb-2 block text-xs font-medium uppercase tracking-[0.18em] text-amber-100/65">
+                    Pesan
+                  </label>
+                  <textarea
+                    className={textareaClass}
+                    id="rsvp-message"
+                    maxLength={500}
+                    name="message"
+                    placeholder="Pesan singkat untuk mempelai"
+                    rows={4}
+                  />
+                  <FieldError>
+                    {getFieldError(rsvpFields, "message")}
+                  </FieldError>
+                </div>
+
+                {rsvpError ? <Notice tone="error">{rsvpError}</Notice> : null}
+                {rsvpStatus ? (
+                  <Notice tone="success">{rsvpStatus}</Notice>
+                ) : null}
+
+                <button
+                  className="w-full rounded-2xl border border-amber-200/30 bg-amber-100/12 px-5 py-4 text-xs font-semibold uppercase tracking-[0.22em] text-amber-50 transition hover:bg-amber-100/20 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={isSubmittingRsvp}
+                  type="submit"
+                >
+                  {isSubmittingRsvp ? "Mengirim..." : "Kirim RSVP"}
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div className="grid gap-6" data-invitation-reveal="right">
+            <form
+              className="rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-black/25 backdrop-blur-xl sm:p-8"
+              onSubmit={submitWish}
+            >
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-200/60">
+                Doa Terbaik
+              </p>
+              <h3 className="mt-3 font-serif text-3xl text-amber-50">
+                Kirim Ucapan
+              </h3>
+              <div className="mt-8 grid gap-5">
                 <div>
                   <input
                     className={inputClass}
-                    defaultValue="1"
-                    id="guest-count"
-                    max={maxGuest ?? 10}
-                    min="1"
-                    name="guestCount"
-                    placeholder="Jumlah tamu"
-                    type="number"
+                    id="wish-name"
+                    maxLength={80}
+                    name="name"
+                    placeholder="Nama Anda"
+                    required
                   />
-                  {maxGuest ? (
-                    <p className="mt-2 text-xs text-zinc-500">
-                      Maksimal {maxGuest} tamu untuk link undangan ini.
-                    </p>
-                  ) : null}
+                  <FieldError>{getFieldError(wishFields, "name")}</FieldError>
+                </div>
+                <div>
+                  <textarea
+                    className={textareaClass}
+                    id="wish-message"
+                    maxLength={500}
+                    name="message"
+                    placeholder="Tulis ucapan dan doa Anda..."
+                    required
+                    rows={5}
+                  />
                   <FieldError>
-                    {getFieldError(rsvpFields, "guestCount")}
+                    {getFieldError(wishFields, "message")}
                   </FieldError>
                 </div>
-              ) : (
-                <input name="guestCount" type="hidden" value="1" />
-              )}
-
-              <div>
-                <textarea
-                  className={textareaClass}
-                  id="rsvp-message"
-                  maxLength={500}
-                  name="message"
-                  placeholder="Pesan singkat"
-                  rows={3}
-                />
-                <FieldError>{getFieldError(rsvpFields, "message")}</FieldError>
-              </div>
-
-              {rsvpError ? <Notice tone="error">{rsvpError}</Notice> : null}
-              {rsvpStatus ? <Notice tone="success">{rsvpStatus}</Notice> : null}
-
-              <button
-                className="h-12 w-full bg-zinc-900 px-5 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-amber-800 disabled:cursor-not-allowed disabled:bg-zinc-400"
-                disabled={isSubmittingRsvp}
-                type="submit"
-              >
-                {isSubmittingRsvp ? "Mengirim..." : "Kirim RSVP"}
-              </button>
-            </div>
-          </form>
-
-          <form className="p-8 md:p-12" onSubmit={submitWish}>
-            <p className="text-xs font-medium uppercase tracking-[0.28em] text-amber-800">
-              Ucapan
-            </p>
-            <h3 className="mt-3 font-serif text-2xl font-light text-zinc-800">
-              Doa Terbaik
-            </h3>
-
-            <div className="mt-8 space-y-7">
-              <div>
-                <input
-                  className={inputClass}
-                  id="wish-name"
-                  maxLength={80}
-                  name="name"
-                  placeholder="Nama Anda"
-                  required
-                />
-                <FieldError>{getFieldError(wishFields, "name")}</FieldError>
-              </div>
-
-              <div>
-                <textarea
-                  className={textareaClass}
-                  id="wish-message"
-                  maxLength={500}
-                  name="message"
-                  placeholder="Tulis ucapan dan doa Anda..."
-                  required
-                  rows={6}
-                />
-                <FieldError>{getFieldError(wishFields, "message")}</FieldError>
-              </div>
-
-              {wishError ? <Notice tone="error">{wishError}</Notice> : null}
-              {wishStatus ? <Notice tone="success">{wishStatus}</Notice> : null}
-
-              <button
-                className="h-12 w-full bg-zinc-900 px-5 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-amber-800 disabled:cursor-not-allowed disabled:bg-zinc-400"
-                disabled={isSubmittingWish}
-                type="submit"
-              >
-                {isSubmittingWish ? "Mengirim..." : "Kirim Ucapan"}
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <div className="mx-auto mt-16 max-w-3xl">
-          <div className="text-center">
-            <p className="text-xs font-medium uppercase tracking-[0.35em] text-zinc-500">
-              Doa dan Harapan
-            </p>
-            <h3 className="mt-4 font-serif text-3xl font-light text-zinc-800">
-              Ucapan Tamu
-            </h3>
-          </div>
-
-          {wishes.length > 0 ? (
-            <div className="mt-9 max-h-[28rem] space-y-7 overflow-y-auto pr-2">
-              {wishes.map((wish) => (
-                <article
-                  className="border-l border-amber-700/30 pl-6 text-sm leading-7"
-                  key={wish.id}
+                {wishError ? <Notice tone="error">{wishError}</Notice> : null}
+                {wishStatus ? (
+                  <Notice tone="success">{wishStatus}</Notice>
+                ) : null}
+                <button
+                  className="rounded-2xl border border-amber-200/30 bg-amber-100/12 px-5 py-4 text-xs font-semibold uppercase tracking-[0.22em] text-amber-50 transition hover:bg-amber-100/20 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={isSubmittingWish}
+                  type="submit"
                 >
-                  <p className="font-medium text-zinc-800">{wish.name}</p>
-                  <p className="mt-2 font-serif italic text-zinc-500">
-                    &quot;{wish.message}&quot;
+                  {isSubmittingWish ? "Mengirim..." : "Kirim Ucapan"}
+                </button>
+              </div>
+            </form>
+
+            <div className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-6 backdrop-blur-xl sm:p-8">
+              <div className="flex items-end justify-between gap-4 border-b border-white/10 pb-5">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-200/60">
+                    Buku Tamu
                   </p>
-                </article>
-              ))}
+                  <h3 className="mt-2 font-serif text-3xl text-amber-50">
+                    Ucapan Tamu
+                  </h3>
+                </div>
+                <span className="rounded-full bg-amber-100/10 px-3 py-1 text-xs text-amber-100/70">
+                  {wishes.length}
+                </span>
+              </div>
+
+              {wishes.length > 0 ? (
+                <div className="mt-6 max-h-[30rem] space-y-4 overflow-y-auto pr-1">
+                  {wishes.map((wish) => (
+                    <article
+                      className="rounded-2xl border border-white/5 bg-slate-900/55 p-5"
+                      data-invitation-reveal="up"
+                      key={wish.id}
+                    >
+                      <p className="text-sm font-semibold text-amber-50">
+                        {wish.name}
+                      </p>
+                      <p className="mt-3 text-sm font-light leading-7 text-slate-300">
+                        &quot;{wish.message}&quot;
+                      </p>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <div className="mt-6 rounded-2xl border border-dashed border-white/10 bg-white/[0.04] px-5 py-8 text-center">
+                  <p className="text-sm leading-6 text-slate-300">
+                    Belum ada ucapan. Jadilah yang pertama mengirim doa terbaik.
+                  </p>
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="mt-9 border border-dashed border-zinc-200 bg-white/70 px-5 py-8 text-center">
-              <p className="text-sm leading-6 text-zinc-500">
-                Belum ada ucapan. Jadilah yang pertama mengirim doa terbaik.
-              </p>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </section>

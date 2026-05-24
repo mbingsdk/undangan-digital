@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
+import { access, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
@@ -12,6 +12,24 @@ const allowedImageTypes = new Map([
   ["image/png", ".png"],
   ["image/webp", ".webp"],
 ]);
+
+async function pathExists(targetPath: string) {
+  return access(targetPath)
+    .then(() => true)
+    .catch(() => false);
+}
+
+async function getUploadDirs() {
+  const projectPublicUploads = path.join(process.cwd(), "public", "uploads");
+  const standalonePublic = path.join(process.cwd(), ".next", "standalone", "public");
+  const standaloneUploads = path.join(standalonePublic, "uploads");
+
+  if (await pathExists(standalonePublic)) {
+    return [standaloneUploads, projectPublicUploads];
+  }
+
+  return [projectPublicUploads];
+}
 
 export async function POST(request: Request) {
   await requireAdmin();
@@ -39,12 +57,17 @@ export async function POST(request: Request) {
     );
   }
 
-  const uploadsDir = path.join(process.cwd(), "public", "uploads");
   const filename = `${randomUUID()}${extension}`;
-  const filePath = path.join(uploadsDir, filename);
+  const uploadDirs = await getUploadDirs();
 
-  await mkdir(uploadsDir, { recursive: true });
-  await writeFile(filePath, Buffer.from(await file.arrayBuffer()));
+  const fileBuffer = Buffer.from(await file.arrayBuffer());
+
+  await Promise.all(
+    uploadDirs.map(async (uploadsDir) => {
+      await mkdir(uploadsDir, { recursive: true });
+      await writeFile(path.join(uploadsDir, filename), fileBuffer);
+    }),
+  );
 
   return NextResponse.json({
     url: `/uploads/${filename}`,
