@@ -41,3 +41,11 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+
+# AI AGENT
+CLAUDE.md
+AGENTS.md
+docs/
+prd_undangan_digital_mvp.md
+Desain Frontend UI_UX Modern.zip

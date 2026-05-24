@@ -10,20 +10,40 @@ async function main() {
     throw new Error("ADMIN_EMAIL dan ADMIN_PASSWORD wajib diisi di .env");
   }
 
-  const passwordHash = await bcrypt.hash(password, 12);
-
-  await prisma.user.upsert({
+  const existingAdmin = await prisma.user.findUnique({
     where: { email },
-    update: {
-      passwordHash,
-    },
-    create: {
-      name: "Admin",
-      email,
-      passwordHash,
-      role: "ADMIN",
-    },
   });
+
+  if (existingAdmin) {
+    const passwordMatches = await bcrypt.compare(
+      password,
+      existingAdmin.passwordHash,
+    );
+    const shouldUpdate =
+      existingAdmin.role !== "ADMIN" || !existingAdmin.name || !passwordMatches;
+
+    if (shouldUpdate) {
+      await prisma.user.update({
+        where: { email },
+        data: {
+          name: existingAdmin.name || "Admin",
+          role: "ADMIN",
+          ...(passwordMatches
+            ? {}
+            : { passwordHash: await bcrypt.hash(password, 12) }),
+        },
+      });
+    }
+  } else {
+    await prisma.user.create({
+      data: {
+        name: "Admin",
+        email,
+        passwordHash: await bcrypt.hash(password, 12),
+        role: "ADMIN",
+      },
+    });
+  }
 
   console.log(`Admin siap: ${email}`);
 }
