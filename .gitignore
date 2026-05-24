@@ -48,6 +48,9 @@ next-env.d.ts
 # AI AGENT
 CLAUDE.md
 AGENTS.md
-docs/
+docs/*
+!docs/deployment.md
+!docs/backup.md
 prd_undangan_digital_mvp.md
 Desain Frontend UI_UX Modern.zip
+Desain_Frontend_UI_UX_Modern/

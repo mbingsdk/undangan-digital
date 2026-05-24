@@ -1,8 +1,14 @@
 import { z } from "zod";
 
 export const invitationStatuses = ["DRAFT", "PUBLISHED", "ARCHIVED"] as const;
+export const attendanceStatuses = [
+  "ATTENDING",
+  "NOT_ATTENDING",
+  "MAYBE",
+] as const;
 
 export const invitationStatusSchema = z.enum(invitationStatuses);
+export const attendanceStatusSchema = z.enum(attendanceStatuses);
 
 const optionalTextSchema = z
   .string()
@@ -143,10 +149,49 @@ export const giftAccountFormSchema = z.object({
   sortOrder: sortOrderSchema,
 });
 
+export const rsvpSubmissionSchema = z
+  .object({
+    name: z.string().trim().min(1, "Nama wajib diisi.").max(80),
+    attendanceStatus: attendanceStatusSchema,
+    guestCount: z.coerce
+      .number({
+        message: "Jumlah tamu wajib berupa angka.",
+      })
+      .int("Jumlah tamu wajib berupa angka bulat.")
+      .min(0, "Jumlah tamu tidak valid.")
+      .default(1),
+    message: z
+      .string()
+      .trim()
+      .max(500, "Pesan maksimal 500 karakter.")
+      .transform((value) => (value.length > 0 ? value : null))
+      .nullable()
+      .optional(),
+  })
+  .refine(
+    (value) =>
+      value.attendanceStatus !== "ATTENDING" || value.guestCount >= 1,
+    {
+      message: "Jumlah tamu minimal 1 jika hadir.",
+      path: ["guestCount"],
+    },
+  )
+  .transform((value) => ({
+    ...value,
+    guestCount: value.attendanceStatus === "ATTENDING" ? value.guestCount : 0,
+  }));
+
+export const wishSubmissionSchema = z.object({
+  name: z.string().trim().min(1, "Nama wajib diisi.").max(80),
+  message: z.string().trim().min(1, "Ucapan wajib diisi.").max(500),
+});
+
 export type InvitationFormInput = z.infer<typeof invitationFormSchema>;
 export type EventFormInput = z.infer<typeof eventFormSchema>;
 export type GalleryImageFormInput = z.infer<typeof galleryImageFormSchema>;
 export type GiftAccountFormInput = z.infer<typeof giftAccountFormSchema>;
+export type RsvpSubmissionInput = z.infer<typeof rsvpSubmissionSchema>;
+export type WishSubmissionInput = z.infer<typeof wishSubmissionSchema>;
 
 export type InvitationFormErrors = Partial<
   Record<keyof InvitationFormInput | "form", string[]>

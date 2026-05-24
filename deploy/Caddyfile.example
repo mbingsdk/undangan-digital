@@ -1,0 +1,5 @@
+undangan.example.com {
+	# If Cloudflare proxy is enabled, keep SSL mode Full or Full (strict).
+	# Caddy can also issue origin certificates directly when DNS points here.
+	reverse_proxy localhost:3000
+}

@@ -56,11 +56,12 @@ model Invitation {
   updatedAt   DateTime         @updatedAt
   deletedAt   DateTime?
 
-  events      InvitationEvent[]
-  galleries   GalleryImage[]
-  rsvps       RSVP[]
-  wishes      Wish[]
-  gifts       GiftAccount[]
+  events    InvitationEvent[]
+  galleries GalleryImage[]
+  rsvps     RSVP[]
+  wishes    Wish[]
+  gifts     GiftAccount[]
+  guests    InvitationGuest[]
 
   @@index([status])
   @@index([deletedAt])
@@ -68,7 +69,7 @@ model Invitation {
 }
 
 model InvitationEvent {
-  id           String     @id @default(cuid())
+  id           String   @id @default(cuid())
   invitationId String
   title        String
   date         DateTime
@@ -77,26 +78,26 @@ model InvitationEvent {
   venueName    String?
   address      String?
   mapsUrl      String?
-  sortOrder    Int        @default(0)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  invitation Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
 
   @@index([invitationId])
   @@map("invitation_events")
 }
 
 model GalleryImage {
-  id           String     @id @default(cuid())
+  id           String   @id @default(cuid())
   invitationId String
   imageUrl     String
   caption      String?
-  sortOrder    Int        @default(0)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  invitation Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
 
   @@index([invitationId])
   @@map("gallery_images")
@@ -105,6 +106,7 @@ model GalleryImage {
 model RSVP {
   id               String           @id @default(cuid())
   invitationId     String
+  guestId          String?
   name             String
   attendanceStatus AttendanceStatus
   guestCount       Int              @default(1)
@@ -112,23 +114,45 @@ model RSVP {
   ipAddress        String?
   createdAt        DateTime         @default(now())
 
-  invitation       Invitation       @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  invitation Invitation       @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  guest      InvitationGuest? @relation(fields: [guestId], references: [id], onDelete: SetNull)
 
   @@index([invitationId])
+  @@index([guestId])
   @@map("rsvps")
 }
 
+model InvitationGuest {
+  id           String    @id @default(cuid())
+  invitationId String
+  name         String
+  phone        String?
+  guestCode    String    @unique
+  maxGuest     Int       @default(1)
+  notes        String?
+  openedAt     DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  invitation Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  rsvps      RSVP[]
+
+  @@index([invitationId])
+  @@index([openedAt])
+  @@map("invitation_guests")
+}
+
 model Wish {
-  id           String     @id @default(cuid())
+  id           String   @id @default(cuid())
   invitationId String
   name         String
   message      String
-  isVisible    Boolean    @default(true)
+  isVisible    Boolean  @default(true)
   ipAddress    String?
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  invitation Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
 
   @@index([invitationId])
   @@index([isVisible])
@@ -136,18 +160,18 @@ model Wish {
 }
 
 model GiftAccount {
-  id            String     @id @default(cuid())
+  id            String   @id @default(cuid())
   invitationId  String
   providerName  String
   accountNumber String
   accountHolder String
   qrImage       String?
   note          String?
-  sortOrder     Int        @default(0)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  invitation    Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  invitation Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
 
   @@index([invitationId])
   @@map("gift_accounts")

@@ -13,6 +13,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "src/generated/prisma/**",
+    "Desain_Frontend_UI_UX_Modern/**",
   ]),
 ]);
 

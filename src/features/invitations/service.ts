@@ -1,9 +1,15 @@
 import { prisma } from "@/lib/prisma";
+import {
+  assertGuestCountAllowed,
+  getPublishedGuestForRsvp,
+} from "@/features/guests/service";
 import type {
   EventFormInput,
   GalleryImageFormInput,
   GiftAccountFormInput,
   InvitationFormInput,
+  RsvpSubmissionInput,
+  WishSubmissionInput,
 } from "./schemas";
 
 export class InvitationSlugConflictError extends Error {
@@ -24,6 +30,13 @@ export class InvitationContentNotFoundError extends Error {
   constructor() {
     super("Konten undangan tidak ditemukan.");
     this.name = "InvitationContentNotFoundError";
+  }
+}
+
+export class PublicInvitationUnavailableError extends Error {
+  constructor() {
+    super("Undangan tidak tersedia.");
+    this.name = "PublicInvitationUnavailableError";
   }
 }
 
@@ -185,6 +198,114 @@ export async function getInvitationEditorData(id: string) {
       deletedAt: null,
     },
   });
+}
+
+export async function getPublicInvitationBySlug(slug: string) {
+  return prisma.invitation.findFirst({
+    select: {
+      title: true,
+      id: true,
+      slug: true,
+      groomName: true,
+      brideName: true,
+      openingText: true,
+      closingText: true,
+      coverImage: true,
+      musicUrl: true,
+      events: {
+        orderBy: [
+          {
+            sortOrder: "asc",
+          },
+          {
+            date: "asc",
+          },
+        ],
+        select: {
+          title: true,
+          date: true,
+          startTime: true,
+          endTime: true,
+          venueName: true,
+          address: true,
+          mapsUrl: true,
+          sortOrder: true,
+        },
+      },
+      galleries: {
+        orderBy: [
+          {
+            sortOrder: "asc",
+          },
+          {
+            createdAt: "asc",
+          },
+        ],
+        select: {
+          imageUrl: true,
+          caption: true,
+          sortOrder: true,
+        },
+      },
+      gifts: {
+        orderBy: [
+          {
+            sortOrder: "asc",
+          },
+          {
+            createdAt: "asc",
+          },
+        ],
+        select: {
+          providerName: true,
+          accountNumber: true,
+          accountHolder: true,
+          qrImage: true,
+          note: true,
+          sortOrder: true,
+        },
+      },
+      wishes: {
+        orderBy: {
+          createdAt: "desc",
+        },
+        select: {
+          id: true,
+          name: true,
+          message: true,
+          createdAt: true,
+        },
+        take: 20,
+        where: {
+          isVisible: true,
+        },
+      },
+    },
+    where: {
+      slug,
+      status: "PUBLISHED",
+      deletedAt: null,
+    },
+  });
+}
+
+async function getPublishedInvitationIdBySlug(slug: string) {
+  const invitation = await prisma.invitation.findFirst({
+    select: {
+      id: true,
+    },
+    where: {
+      slug,
+      status: "PUBLISHED",
+      deletedAt: null,
+    },
+  });
+
+  if (!invitation) {
+    throw new PublicInvitationUnavailableError();
+  }
+
+  return invitation.id;
 }
 
 export async function createInvitation(input: InvitationFormInput) {
@@ -448,6 +569,199 @@ export async function deleteGiftAccount(invitationId: string, giftId: string) {
   return prisma.giftAccount.delete({
     where: {
       id: giftId,
+    },
+  });
+}
+
+export async function createPublicRsvp({
+  guestCode,
+  input,
+  ipAddress,
+  slug,
+}: {
+  guestCode?: string | null;
+  input: RsvpSubmissionInput;
+  ipAddress?: string | null;
+  slug: string;
+}) {
+  const invitationId = await getPublishedInvitationIdBySlug(slug);
+  const guest = await getPublishedGuestForRsvp({
+    guestCode,
+    slug,
+  });
+
+  if (guest && input.attendanceStatus === "ATTENDING") {
+    assertGuestCountAllowed(input.guestCount, guest.maxGuest);
+  }
+
+  return prisma.rSVP.create({
+    data: {
+      invitationId,
+      guestId: guest?.id,
+      name: input.name,
+      attendanceStatus: input.attendanceStatus,
+      guestCount: input.guestCount,
+      message: input.message,
+      ipAddress,
+    },
+    select: {
+      id: true,
+      name: true,
+      attendanceStatus: true,
+      guestCount: true,
+      message: true,
+      createdAt: true,
+    },
+  });
+}
+
+export async function createPublicWish({
+  input,
+  ipAddress,
+  slug,
+}: {
+  input: WishSubmissionInput;
+  ipAddress?: string | null;
+  slug: string;
+}) {
+  const invitationId = await getPublishedInvitationIdBySlug(slug);
+
+  return prisma.wish.create({
+    data: {
+      invitationId,
+      name: input.name,
+      message: input.message,
+      isVisible: true,
+      ipAddress,
+    },
+    select: {
+      id: true,
+      name: true,
+      message: true,
+      createdAt: true,
+      isVisible: true,
+    },
+  });
+}
+
+export async function getInvitationRsvps(invitationId: string) {
+  await assertInvitationExists(invitationId);
+
+  const rsvps = await prisma.rSVP.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: {
+      id: true,
+      name: true,
+      attendanceStatus: true,
+      guestCount: true,
+      message: true,
+      createdAt: true,
+      guest: {
+        select: {
+          name: true,
+        },
+      },
+    },
+    where: {
+      invitationId,
+    },
+  });
+
+  const summary = rsvps.reduce(
+    (current, rsvp) => {
+      if (rsvp.attendanceStatus === "ATTENDING") {
+        current.attending += 1;
+        current.estimatedGuests += rsvp.guestCount;
+      } else if (rsvp.attendanceStatus === "NOT_ATTENDING") {
+        current.notAttending += 1;
+      } else {
+        current.maybe += 1;
+      }
+
+      return current;
+    },
+    {
+      attending: 0,
+      estimatedGuests: 0,
+      maybe: 0,
+      notAttending: 0,
+    },
+  );
+
+  return {
+    rsvps,
+    summary,
+  };
+}
+
+export async function getInvitationWishes(invitationId: string) {
+  await assertInvitationExists(invitationId);
+
+  return prisma.wish.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: {
+      id: true,
+      name: true,
+      message: true,
+      isVisible: true,
+      createdAt: true,
+    },
+    where: {
+      invitationId,
+    },
+  });
+}
+
+async function assertWishExists(invitationId: string, wishId: string) {
+  const wish = await prisma.wish.findFirst({
+    select: {
+      id: true,
+    },
+    where: {
+      id: wishId,
+      invitationId,
+      invitation: {
+        deletedAt: null,
+      },
+    },
+  });
+
+  if (!wish) {
+    throw new InvitationContentNotFoundError();
+  }
+}
+
+export async function setWishVisibility({
+  invitationId,
+  isVisible,
+  wishId,
+}: {
+  invitationId: string;
+  isVisible: boolean;
+  wishId: string;
+}) {
+  await assertWishExists(invitationId, wishId);
+
+  return prisma.wish.update({
+    data: {
+      isVisible,
+    },
+    where: {
+      id: wishId,
+    },
+  });
+}
+
+export async function deleteWish(invitationId: string, wishId: string) {
+  await assertWishExists(invitationId, wishId);
+
+  return prisma.wish.delete({
+    where: {
+      id: wishId,
     },
   });
 }

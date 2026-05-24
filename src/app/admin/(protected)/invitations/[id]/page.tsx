@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   createEventAction,
@@ -141,6 +142,24 @@ export default async function EditInvitationPage({
               Hapus undangan
             </button>
           </form>
+          <Link
+            className="inline-flex h-10 items-center justify-center border border-stone-300 bg-white px-3 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
+            href={`/admin/invitations/${invitation.id}/rsvps`}
+          >
+            Lihat RSVP
+          </Link>
+          <Link
+            className="inline-flex h-10 items-center justify-center border border-stone-300 bg-white px-3 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
+            href={`/admin/invitations/${invitation.id}/guests`}
+          >
+            Kelola Tamu
+          </Link>
+          <Link
+            className="inline-flex h-10 items-center justify-center border border-stone-300 bg-white px-3 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:bg-stone-100"
+            href={`/admin/invitations/${invitation.id}/wishes`}
+          >
+            Lihat Ucapan
+          </Link>
         </div>
       </Section>
 

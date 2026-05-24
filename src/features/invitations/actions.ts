@@ -30,9 +30,11 @@ import {
   deleteInvitationEvent,
   InvitationContentNotFoundError,
   createInvitation,
+  deleteWish,
   InvitationNotFoundError,
   InvitationSlugConflictError,
   publishInvitation,
+  setWishVisibility,
   softDeleteInvitation,
   unpublishInvitation,
   updateGalleryImage,
@@ -69,6 +71,8 @@ function revalidateInvitationEditor(id: string) {
   revalidatePath("/admin");
   revalidatePath("/admin/invitations");
   revalidatePath(`/admin/invitations/${id}`);
+  revalidatePath(`/admin/invitations/${id}/rsvps`);
+  revalidatePath(`/admin/invitations/${id}/wishes`);
 }
 
 export async function createInvitationAction(
@@ -373,6 +377,35 @@ export async function deleteGiftAccountAction(
 ) {
   await requireAdmin();
   await deleteGiftAccount(invitationId, giftId);
+
+  revalidateInvitationEditor(invitationId);
+}
+
+export async function hideWishAction(invitationId: string, wishId: string) {
+  await requireAdmin();
+  await setWishVisibility({
+    invitationId,
+    isVisible: false,
+    wishId,
+  });
+
+  revalidateInvitationEditor(invitationId);
+}
+
+export async function showWishAction(invitationId: string, wishId: string) {
+  await requireAdmin();
+  await setWishVisibility({
+    invitationId,
+    isVisible: true,
+    wishId,
+  });
+
+  revalidateInvitationEditor(invitationId);
+}
+
+export async function deleteWishAction(invitationId: string, wishId: string) {
+  await requireAdmin();
+  await deleteWish(invitationId, wishId);
 
   revalidateInvitationEditor(invitationId);
 }
