@@ -113,13 +113,17 @@ function buildWhatsAppUrl({
   brideName,
   groomName,
   publicUrl,
+  recipientName,
 }: {
   brideName: string;
   groomName: string;
   publicUrl: string;
+  recipientName: string;
 }) {
   const coupleNames = `${groomName} & ${brideName}`;
   const message = `Assalamu'alaikum Wr. Wb.
+
+Kepada Yth. ${recipientName},
 
 Dengan penuh rasa syukur, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dalam acara pernikahan kami:
 
@@ -260,10 +264,12 @@ export default async function PublicInvitationPage({
     recipientName: guest ? null : manualRecipientName,
     slug: invitation.slug,
   });
+  const recipientName = personalizedGuestName ?? "Bapak/Ibu/Saudara/i";
   const whatsAppUrl = buildWhatsAppUrl({
     brideName: invitation.brideName,
     groomName: invitation.groomName,
     publicUrl,
+    recipientName,
   });
   const initialWishes = invitation.wishes.map((wish) => ({
     id: wish.id,
@@ -272,7 +278,6 @@ export default async function PublicInvitationPage({
     createdAt: wish.createdAt.toISOString(),
   }));
   const coupleNames = `${invitation.groomName} & ${invitation.brideName}`;
-  const recipientName = personalizedGuestName ?? "Bapak/Ibu/Saudara/i";
 
   return (
     <>
@@ -320,7 +325,7 @@ export default async function PublicInvitationPage({
             <p className="mx-auto mt-12 max-w-2xl whitespace-pre-line text-sm font-light leading-8 text-slate-300 sm:text-base">
               &quot;
               {invitation.openingText ??
-                "Dengan penuh rasa syukur, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu pada hari bahagia kami."}
+                `Dengan penuh rasa syukur, kami mengundang ${recipientName} untuk hadir dan memberikan doa restu pada hari bahagia kami.`}
               &quot;
             </p>
 
