@@ -7,7 +7,7 @@ module.exports = {
       cwd: "/home/mbingsdk/undangan",
       env: {
         NODE_ENV: "production",
-        PORT: 3000,
+        PORT: 3001,
         HOSTNAME: "0.0.0.0",
       },
       autorestart: true,
