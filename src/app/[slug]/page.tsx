@@ -38,11 +38,53 @@ type PublicInvitationPageProps = {
   }>;
   searchParams?: Promise<{
     guest?: string | string[];
+    to?: string | string[];
   }>;
 };
 
-function getPublicInvitationUrl(slug: string, guestCode?: string | null) {
-  return getInvitationPublicUrl(slug, guestCode);
+function getFirstSearchParam(value?: string | string[]) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function getRecipientNameFromToParam(value?: string | string[]) {
+  const rawName = getFirstSearchParam(value);
+
+  if (!rawName) {
+    return null;
+  }
+
+  const normalizedName = rawName.replace(/\s+/g, " ").trim();
+
+  if (!normalizedName) {
+    return null;
+  }
+
+  return normalizedName.slice(0, 100);
+}
+
+function getPublicInvitationUrl({
+  guestCode,
+  recipientName,
+  slug,
+}: {
+  guestCode?: string | null;
+  recipientName?: string | null;
+  slug: string;
+}) {
+  if (guestCode) {
+    return getInvitationPublicUrl(slug, guestCode);
+  }
+
+  const publicUrl = getInvitationPublicUrl(slug);
+
+  if (!recipientName) {
+    return publicUrl;
+  }
+
+  const url = new URL(publicUrl);
+  url.searchParams.set("to", recipientName);
+
+  return url.toString();
 }
 
 function getDatePart(date: Date) {
@@ -187,9 +229,10 @@ export default async function PublicInvitationPage({
 }: PublicInvitationPageProps) {
   const { slug } = await params;
   const resolvedSearchParams = await searchParams;
-  const guestCodeParam = Array.isArray(resolvedSearchParams?.guest)
-    ? resolvedSearchParams?.guest[0]
-    : resolvedSearchParams?.guest;
+  const guestCodeParam = getFirstSearchParam(resolvedSearchParams?.guest);
+  const manualRecipientName = getRecipientNameFromToParam(
+    resolvedSearchParams?.to,
+  );
   const invitation = await getPublicInvitationBySlug(slug);
 
   if (!invitation) {
@@ -211,7 +254,12 @@ export default async function PublicInvitationPage({
   const countdownTarget = firstEvent
     ? `${getDatePart(firstEvent.date)}T${firstEvent.startTime}:00`
     : undefined;
-  const publicUrl = getPublicInvitationUrl(invitation.slug, guest?.guestCode);
+  const personalizedGuestName = guest?.name ?? manualRecipientName;
+  const publicUrl = getPublicInvitationUrl({
+    guestCode: guest?.guestCode,
+    recipientName: guest ? null : manualRecipientName,
+    slug: invitation.slug,
+  });
   const whatsAppUrl = buildWhatsAppUrl({
     brideName: invitation.brideName,
     groomName: invitation.groomName,
@@ -224,7 +272,7 @@ export default async function PublicInvitationPage({
     createdAt: wish.createdAt.toISOString(),
   }));
   const coupleNames = `${invitation.groomName} & ${invitation.brideName}`;
-  const recipientName = guest?.name ?? "Bapak/Ibu/Saudara/i";
+  const recipientName = personalizedGuestName ?? "Bapak/Ibu/Saudara/i";
 
   return (
     <>
@@ -296,10 +344,10 @@ export default async function PublicInvitationPage({
 
         <section className="relative z-10 overflow-hidden px-5 py-28 sm:px-8">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_20%,rgba(251,191,36,0.12),transparent_34%),radial-gradient(circle_at_88%_75%,rgba(16,185,129,0.1),transparent_36%)]" />
-            <div
-              className="relative mx-auto max-w-5xl"
-              data-invitation-reveal="pop"
-            >
+          <div
+            className="relative mx-auto max-w-5xl"
+            data-invitation-reveal="pop"
+          >
             <div className="rounded-[2rem] bg-gradient-to-b from-amber-200/20 to-transparent p-px shadow-2xl shadow-black/25">
               <div className="rounded-[2rem] border border-white/10 bg-slate-900/65 px-5 py-10 text-center backdrop-blur-2xl sm:px-10 sm:py-14">
                 <Calendar className="mx-auto mb-6 h-8 w-8 text-amber-200/65" />
@@ -531,7 +579,7 @@ export default async function PublicInvitationPage({
 
         <PublicResponseForms
           guestCode={guest?.guestCode}
-          guestName={guest?.name}
+          guestName={personalizedGuestName}
           initialWishes={initialWishes}
           maxGuest={guest?.maxGuest}
           slug={invitation.slug}
