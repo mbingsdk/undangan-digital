@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { access, mkdir, writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
@@ -13,22 +13,14 @@ const allowedImageTypes = new Map([
   ["image/webp", ".webp"],
 ]);
 
-async function pathExists(targetPath: string) {
-  return access(targetPath)
-    .then(() => true)
-    .catch(() => false);
-}
+function getUploadsDir() {
+  const configuredDir = process.env.UPLOAD_DIR?.trim();
 
-async function getUploadDirs() {
-  const projectPublicUploads = path.join(process.cwd(), "public", "uploads");
-  const standalonePublic = path.join(process.cwd(), ".next", "standalone", "public");
-  const standaloneUploads = path.join(standalonePublic, "uploads");
-
-  if (await pathExists(standalonePublic)) {
-    return [standaloneUploads, projectPublicUploads];
+  if (configuredDir) {
+    return path.resolve(configuredDir);
   }
 
-  return [projectPublicUploads];
+  return path.join(process.cwd(), "public", "uploads");
 }
 
 export async function POST(request: Request) {
@@ -38,7 +30,10 @@ export async function POST(request: Request) {
   const file = formData?.get("file");
 
   if (!(file instanceof File)) {
-    return NextResponse.json({ error: "File gambar wajib diisi." }, { status: 400 });
+    return NextResponse.json(
+      { error: "File gambar wajib diisi." },
+      { status: 400 },
+    );
   }
 
   if (file.size > maxFileSize) {
@@ -57,17 +52,12 @@ export async function POST(request: Request) {
     );
   }
 
+  const uploadsDir = getUploadsDir();
   const filename = `${randomUUID()}${extension}`;
-  const uploadDirs = await getUploadDirs();
-
   const fileBuffer = Buffer.from(await file.arrayBuffer());
 
-  await Promise.all(
-    uploadDirs.map(async (uploadsDir) => {
-      await mkdir(uploadsDir, { recursive: true });
-      await writeFile(path.join(uploadsDir, filename), fileBuffer);
-    }),
-  );
+  await mkdir(uploadsDir, { recursive: true });
+  await writeFile(path.join(uploadsDir, filename), fileBuffer);
 
   return NextResponse.json({
     url: `/uploads/${filename}`,
