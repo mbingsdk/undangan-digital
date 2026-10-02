@@ -9,6 +9,7 @@ module.exports = {
         NODE_ENV: "production",
         PORT: 3001,
         HOSTNAME: "0.0.0.0",
+        UPLOAD_DIR: "/home/mbingsdk/undangan/public/uploads",
       },
       autorestart: true,
       max_restarts: 10,
