@@ -26,12 +26,14 @@ export function buildInvitationDescription({
   brideName,
   eventDateLabel,
   groomName,
+  coupleNames: explicitCoupleNames,
 }: {
   brideName: string;
+  coupleNames?: string;
   eventDateLabel?: string;
   groomName: string;
 }) {
-  const coupleNames = `${groomName} & ${brideName}`;
+  const coupleNames = explicitCoupleNames ?? `${groomName} & ${brideName}`;
   const dateText = eventDateLabel ? ` pada ${eventDateLabel}` : "";
 
   return `Dengan penuh rasa syukur, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan ${coupleNames}${dateText}. Buka undangan digital untuk melihat detail acara, lokasi, RSVP, dan ucapan.`;
