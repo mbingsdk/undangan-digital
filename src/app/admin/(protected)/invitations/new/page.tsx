@@ -20,6 +20,7 @@ export default function NewInvitationPage() {
         <InvitationForm
           action={createInvitationAction}
           defaultValues={{
+            type: "SINGLE",
             status: "DRAFT",
           }}
           submitLabel="Simpan undangan"
