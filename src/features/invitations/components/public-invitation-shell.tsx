@@ -134,12 +134,16 @@ export function PublicInvitationShell({
               <p className="text-xs font-semibold uppercase tracking-[0.42em] text-amber-200/75">
                 The Wedding Of
               </p>
-              <h1 className="mt-7 font-serif text-6xl font-medium leading-[0.9] tracking-tight text-amber-50 drop-shadow-2xl sm:text-8xl md:text-9xl">
-                {groomName}
-                <span className="my-3 block text-5xl font-light italic text-amber-300/80 sm:text-7xl">
+              <h1 className="mx-auto mt-7 w-full max-w-[min(92vw,72rem)] font-serif font-medium text-amber-50 drop-shadow-2xl">
+                <span className="block text-balance text-[clamp(2.75rem,10vw,7.5rem)] leading-[0.92] tracking-[-0.035em] [overflow-wrap:anywhere]">
+                  {groomName}
+                </span>
+                <span className="my-3 block text-[clamp(2.5rem,7vw,5.5rem)] font-light italic leading-none text-amber-300/80">
                   &
                 </span>
-                {brideName}
+                <span className="block text-balance text-[clamp(2.75rem,10vw,7.5rem)] leading-[0.92] tracking-[-0.035em] [overflow-wrap:anywhere]">
+                  {brideName}
+                </span>
               </h1>
               {weddingDateLabel ? (
                 <p className="mt-8 text-xs font-light uppercase tracking-[0.28em] text-slate-300">
@@ -266,7 +270,7 @@ export function PublicInvitationShell({
                   <p className="invitation-scene-line mt-3 font-serif text-4xl font-medium italic text-amber-300 sm:text-6xl [animation-delay:160ms]">
                     dalam keabadian.
                   </p>
-                  <div className="invitation-scene-line mx-auto mt-9 rounded-full border border-amber-100/20 bg-white/[0.06] px-6 py-3 text-xs font-semibold uppercase tracking-[0.28em] text-amber-100/70 backdrop-blur-xl [animation-delay:340ms]">
+                  <div className="invitation-scene-line mx-auto mt-9 max-w-[min(88vw,40rem)] rounded-3xl border border-amber-100/20 bg-white/[0.06] px-6 py-3 text-balance text-xs font-semibold uppercase leading-5 tracking-[0.18em] text-amber-100/70 backdrop-blur-xl [animation-delay:340ms] [overflow-wrap:anywhere]">
                     {groomName} & {brideName}
                   </div>
                   <div className="mx-auto mt-9 h-px w-48 overflow-hidden bg-amber-100/10">
