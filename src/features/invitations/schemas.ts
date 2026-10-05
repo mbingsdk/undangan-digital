@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const invitationStatuses = ["DRAFT", "PUBLISHED", "ARCHIVED"] as const;
+export const invitationTypes = ["SINGLE", "TWIN"] as const;
 export const attendanceStatuses = [
   "ATTENDING",
   "NOT_ATTENDING",
@@ -8,6 +9,7 @@ export const attendanceStatuses = [
 ] as const;
 
 export const invitationStatusSchema = z.enum(invitationStatuses);
+export const invitationTypeSchema = z.enum(invitationTypes);
 export const attendanceStatusSchema = z.enum(attendanceStatuses);
 
 const optionalTextSchema = z
@@ -99,6 +101,7 @@ const dateSchema = z
   .transform((value) => new Date(`${value}T00:00:00.000Z`));
 
 export const invitationFormSchema = z.object({
+  type: invitationTypeSchema,
   title: z.string().trim().min(1, "Judul undangan wajib diisi.").max(120),
   slug: z
     .string()
@@ -110,17 +113,23 @@ export const invitationFormSchema = z.object({
       /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
       "Slug hanya boleh berisi huruf kecil, angka, dan tanda hubung.",
     ),
-  groomName: z.string().trim().min(1, "Nama mempelai wanita wajib diisi.").max(120),
-  brideName: z
-    .string()
-    .trim()
-    .min(1, "Nama mempelai pria wajib diisi.")
-    .max(120),
+  groomName: z.string().trim().min(1, "Nama mempelai pria wajib diisi.").max(120),
+  brideName: z.string().trim().min(1, "Nama mempelai wanita wajib diisi.").max(120),
+  secondGroomName: optionalTextSchema,
+  secondBrideName: optionalTextSchema,
   openingText: optionalTextSchema,
   closingText: optionalTextSchema,
   coverImage: optionalUrlPathSchema,
   musicUrl: optionalUrlPathSchema,
   status: invitationStatusSchema,
+}).superRefine((value, context) => {
+  if (value.type !== "TWIN") return;
+  if (!value.secondGroomName) {
+    context.addIssue({ code: "custom", message: "Nama mempelai pria pasangan kedua wajib diisi.", path: ["secondGroomName"] });
+  }
+  if (!value.secondBrideName) {
+    context.addIssue({ code: "custom", message: "Nama mempelai wanita pasangan kedua wajib diisi.", path: ["secondBrideName"] });
+  }
 });
 
 export const eventFormSchema = z.object({
@@ -229,10 +238,13 @@ export type GiftAccountActionState = {
 
 export function formDataToInvitationInput(formData: FormData) {
   return {
+    type: formData.get("type"),
     title: formData.get("title"),
     slug: formData.get("slug"),
     groomName: formData.get("groomName"),
     brideName: formData.get("brideName"),
+    secondGroomName: formData.get("secondGroomName"),
+    secondBrideName: formData.get("secondBrideName"),
     openingText: formData.get("openingText"),
     closingText: formData.get("closingText"),
     coverImage: formData.get("coverImage"),
