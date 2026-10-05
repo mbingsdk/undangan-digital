@@ -311,13 +311,13 @@ export default async function PublicInvitationPage({
               Maha Suci Allah
             </p>
             <div className="mt-10">
-              <h1 className="font-serif text-6xl font-medium leading-[0.9] tracking-tight text-amber-50 drop-shadow-2xl sm:text-8xl lg:text-9xl">
+              <h1 className="mx-auto max-w-[min(92vw,72rem)] text-balance font-serif text-[clamp(2.75rem,10vw,7.5rem)] font-medium leading-[0.92] tracking-[-0.035em] text-amber-50 drop-shadow-2xl [overflow-wrap:anywhere]">
                 {invitation.groomName}
               </h1>
-              <p className="my-2 font-serif text-5xl font-light italic text-amber-300/80 sm:text-7xl">
+              <p className="my-3 font-serif text-[clamp(2.5rem,7vw,5.5rem)] font-light italic leading-none text-amber-300/80">
                 &
               </p>
-              <h1 className="font-serif text-6xl font-medium leading-[0.9] tracking-tight text-amber-50 drop-shadow-2xl sm:text-8xl lg:text-9xl">
+              <h1 className="mx-auto max-w-[min(92vw,72rem)] text-balance font-serif text-[clamp(2.75rem,10vw,7.5rem)] font-medium leading-[0.92] tracking-[-0.035em] text-amber-50 drop-shadow-2xl [overflow-wrap:anywhere]">
                 {invitation.brideName}
               </h1>
             </div>
@@ -605,7 +605,7 @@ export default async function PublicInvitationPage({
                 "Merupakan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu."}
             </p>
 
-            <h2 className="mt-12 font-serif text-5xl font-medium tracking-tight text-amber-50 sm:text-7xl">
+            <h2 className="mx-auto mt-12 max-w-3xl text-balance font-serif text-[clamp(2.5rem,8vw,5rem)] font-medium leading-[0.95] tracking-[-0.03em] text-amber-50 [overflow-wrap:anywhere]">
               {coupleNames}
             </h2>
 
