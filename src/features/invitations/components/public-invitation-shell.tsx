@@ -4,6 +4,20 @@
 import { Headphones, Mail, Music2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+function getResponsiveNameClass(name: string) {
+  const length = name.trim().length;
+
+  if (length >= 24) {
+    return "text-[clamp(2.25rem,4.8vw,4.75rem)]";
+  }
+
+  if (length >= 17) {
+    return "text-[clamp(2.5rem,5.8vw,5.5rem)]";
+  }
+
+  return "text-[clamp(2.75rem,7vw,6.25rem)]";
+}
+
 type PublicInvitationShellProps = {
   brideName: string;
   coverImage?: string | null;
@@ -134,14 +148,18 @@ export function PublicInvitationShell({
               <p className="text-xs font-semibold uppercase tracking-[0.42em] text-amber-200/75">
                 The Wedding Of
               </p>
-              <h1 className="mx-auto mt-7 w-full max-w-[min(92vw,72rem)] font-serif font-medium text-amber-50 drop-shadow-2xl">
-                <span className="block text-balance text-[clamp(2.75rem,10vw,7.5rem)] leading-[0.92] tracking-[-0.035em] [overflow-wrap:anywhere]">
+              <h1 className="mx-auto mt-7 w-full max-w-[min(88vw,60rem)] font-serif font-medium text-amber-50 drop-shadow-2xl">
+                <span
+                  className={`block text-balance leading-[0.94] tracking-[-0.03em] [overflow-wrap:anywhere] ${getResponsiveNameClass(groomName)}`}
+                >
                   {groomName}
                 </span>
                 <span className="my-3 block text-[clamp(2.5rem,7vw,5.5rem)] font-light italic leading-none text-amber-300/80">
                   &
                 </span>
-                <span className="block text-balance text-[clamp(2.75rem,10vw,7.5rem)] leading-[0.92] tracking-[-0.035em] [overflow-wrap:anywhere]">
+                <span
+                  className={`block text-balance leading-[0.94] tracking-[-0.03em] [overflow-wrap:anywhere] ${getResponsiveNameClass(brideName)}`}
+                >
                   {brideName}
                 </span>
               </h1>
