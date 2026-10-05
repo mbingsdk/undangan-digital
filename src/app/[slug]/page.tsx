@@ -46,6 +46,20 @@ function getFirstSearchParam(value?: string | string[]) {
   return Array.isArray(value) ? value[0] : value;
 }
 
+function getResponsiveNameClass(name: string) {
+  const length = name.trim().length;
+
+  if (length >= 24) {
+    return "text-[clamp(2.25rem,4.8vw,4.75rem)]";
+  }
+
+  if (length >= 17) {
+    return "text-[clamp(2.5rem,5.8vw,5.5rem)]";
+  }
+
+  return "text-[clamp(2.75rem,7vw,6.25rem)]";
+}
+
 function getRecipientNameFromToParam(value?: string | string[]) {
   const rawName = getFirstSearchParam(value);
 
@@ -311,13 +325,17 @@ export default async function PublicInvitationPage({
               Maha Suci Allah
             </p>
             <div className="mt-10">
-              <h1 className="mx-auto max-w-[min(92vw,72rem)] text-balance font-serif text-[clamp(2.75rem,10vw,7.5rem)] font-medium leading-[0.92] tracking-[-0.035em] text-amber-50 drop-shadow-2xl [overflow-wrap:anywhere]">
+              <h1
+                className={`mx-auto max-w-[min(88vw,60rem)] text-balance font-serif font-medium leading-[0.94] tracking-[-0.03em] text-amber-50 drop-shadow-2xl [overflow-wrap:anywhere] ${getResponsiveNameClass(invitation.groomName)}`}
+              >
                 {invitation.groomName}
               </h1>
               <p className="my-3 font-serif text-[clamp(2.5rem,7vw,5.5rem)] font-light italic leading-none text-amber-300/80">
                 &
               </p>
-              <h1 className="mx-auto max-w-[min(92vw,72rem)] text-balance font-serif text-[clamp(2.75rem,10vw,7.5rem)] font-medium leading-[0.92] tracking-[-0.035em] text-amber-50 drop-shadow-2xl [overflow-wrap:anywhere]">
+              <h1
+                className={`mx-auto max-w-[min(88vw,60rem)] text-balance font-serif font-medium leading-[0.94] tracking-[-0.03em] text-amber-50 drop-shadow-2xl [overflow-wrap:anywhere] ${getResponsiveNameClass(invitation.brideName)}`}
+              >
                 {invitation.brideName}
               </h1>
             </div>
