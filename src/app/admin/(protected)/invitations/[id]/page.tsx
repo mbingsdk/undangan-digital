@@ -89,10 +89,13 @@ export default async function EditInvitationPage({
         <InvitationForm
           action={updateInvitationAction.bind(null, invitation.id)}
           defaultValues={{
+            type: invitation.type,
             title: invitation.title,
             slug: invitation.slug,
             groomName: invitation.groomName,
             brideName: invitation.brideName,
+            secondGroomName: invitation.couples[1]?.groomName ?? "",
+            secondBrideName: invitation.couples[1]?.brideName ?? "",
             openingText: invitation.openingText,
             closingText: invitation.closingText,
             coverImage: invitation.coverImage,
