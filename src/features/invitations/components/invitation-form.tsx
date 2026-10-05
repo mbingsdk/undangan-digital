@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import Link from "next/link";
 import {
   adminButtonPrimaryClass,
@@ -11,6 +11,7 @@ import {
 } from "@/components/admin/admin-ui";
 import {
   invitationStatuses,
+  invitationTypes,
   type InvitationActionState,
   type InvitationFormInput,
 } from "../schemas";
@@ -41,6 +42,9 @@ export function InvitationForm({
   submitLabel,
 }: InvitationFormProps) {
   const [state, formAction, isPending] = useActionState(action, emptyState);
+  const [invitationType, setInvitationType] = useState(
+    defaultValues?.type === "TWIN" ? "TWIN" : "SINGLE",
+  );
   const values = {
     ...defaultValues,
     ...state.values,
@@ -55,6 +59,31 @@ export function InvitationForm({
       ) : null}
 
       <div className="grid gap-5 md:grid-cols-2">
+        <div className="space-y-2 md:col-span-2">
+          <label className="text-sm font-medium text-stone-800" htmlFor="type">
+            Jenis undangan
+          </label>
+          <select
+            className={adminSelectClass}
+            id="type"
+            name="type"
+            onChange={(event) =>
+              setInvitationType(event.target.value === "TWIN" ? "TWIN" : "SINGLE")
+            }
+            value={invitationType}
+          >
+            {invitationTypes.map((type) => (
+              <option key={type} value={type}>
+                {type === "TWIN" ? "Pernikahan Kembar" : "Pernikahan Biasa"}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs leading-5 text-stone-500">
+            Mode kembar menampilkan dua pasangan dalam satu undangan dan satu rangkaian acara.
+          </p>
+          <FieldError message={state.errors?.type?.[0]} />
+        </div>
+
         <div className="space-y-2 md:col-span-2">
           <label className="text-sm font-medium text-stone-800" htmlFor="title">
             Judul undangan
@@ -89,7 +118,7 @@ export function InvitationForm({
             className="text-sm font-medium text-stone-800"
             htmlFor="groomName"
           >
-            Nama mempelai pria
+            {invitationType === "TWIN" ? "Pasangan 1 - mempelai pria" : "Nama mempelai pria"}
           </label>
           <input
             className={adminInputClass}
@@ -106,7 +135,7 @@ export function InvitationForm({
             className="text-sm font-medium text-stone-800"
             htmlFor="brideName"
           >
-            Nama mempelai wanita
+            {invitationType === "TWIN" ? "Pasangan 1 - mempelai wanita" : "Nama mempelai wanita"}
           </label>
           <input
             className={adminInputClass}
@@ -117,6 +146,38 @@ export function InvitationForm({
           />
           <FieldError message={state.errors?.brideName?.[0]} />
         </div>
+
+        {invitationType === "TWIN" ? (
+          <>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-stone-800" htmlFor="secondGroomName">
+                Pasangan 2 - mempelai pria
+              </label>
+              <input
+                className={adminInputClass}
+                defaultValue={values.secondGroomName ?? ""}
+                id="secondGroomName"
+                name="secondGroomName"
+                required
+              />
+              <FieldError message={state.errors?.secondGroomName?.[0]} />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-stone-800" htmlFor="secondBrideName">
+                Pasangan 2 - mempelai wanita
+              </label>
+              <input
+                className={adminInputClass}
+                defaultValue={values.secondBrideName ?? ""}
+                id="secondBrideName"
+                name="secondBrideName"
+                required
+              />
+              <FieldError message={state.errors?.secondBrideName?.[0]} />
+            </div>
+          </>
+        ) : null}
 
         <UploadField
           defaultValue={values.coverImage}
