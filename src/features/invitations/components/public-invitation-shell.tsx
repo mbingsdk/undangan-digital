@@ -20,6 +20,10 @@ function getResponsiveNameClass(name: string) {
 
 type PublicInvitationShellProps = {
   brideName: string;
+  secondaryCouple?: {
+    brideName: string;
+    groomName: string;
+  } | null;
   coverImage?: string | null;
   groomName: string;
   musicUrl?: string | null;
@@ -29,6 +33,7 @@ type PublicInvitationShellProps = {
 
 export function PublicInvitationShell({
   brideName,
+  secondaryCouple,
   coverImage,
   groomName,
   musicUrl,
@@ -148,21 +153,37 @@ export function PublicInvitationShell({
               <p className="text-xs font-semibold uppercase tracking-[0.42em] text-amber-200/75">
                 The Wedding Of
               </p>
-              <h1 className="mx-auto mt-7 w-full max-w-[min(88vw,60rem)] font-serif font-medium text-amber-50 drop-shadow-2xl">
-                <span
-                  className={`block text-balance leading-[0.94] tracking-[-0.03em] [overflow-wrap:anywhere] ${getResponsiveNameClass(groomName)}`}
-                >
-                  {groomName}
-                </span>
-                <span className="my-3 block text-[clamp(2.5rem,7vw,5.5rem)] font-light italic leading-none text-amber-300/80">
-                  &
-                </span>
-                <span
-                  className={`block text-balance leading-[0.94] tracking-[-0.03em] [overflow-wrap:anywhere] ${getResponsiveNameClass(brideName)}`}
-                >
-                  {brideName}
-                </span>
-              </h1>
+              <div className="mx-auto mt-7 w-full max-w-[min(88vw,60rem)] font-serif font-medium text-amber-50 drop-shadow-2xl">
+                <div>
+                  <span className={`block text-balance leading-[0.94] tracking-[-0.03em] [overflow-wrap:anywhere] ${secondaryCouple ? "text-[clamp(2.2rem,5vw,4.5rem)]" : getResponsiveNameClass(groomName)}`}>
+                    {groomName}
+                  </span>
+                  <span className={`my-2 block font-light italic leading-none text-amber-300/80 ${secondaryCouple ? "text-[clamp(2rem,4vw,3.5rem)]" : "text-[clamp(2.5rem,7vw,5.5rem)]"}`}>
+                    &
+                  </span>
+                  <span className={`block text-balance leading-[0.94] tracking-[-0.03em] [overflow-wrap:anywhere] ${secondaryCouple ? "text-[clamp(2.2rem,5vw,4.5rem)]" : getResponsiveNameClass(brideName)}`}>
+                    {brideName}
+                  </span>
+                </div>
+                {secondaryCouple ? (
+                  <>
+                    <p className="my-5 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-amber-200/55">
+                      bersama
+                    </p>
+                    <div>
+                      <span className="block text-balance text-[clamp(2.2rem,5vw,4.5rem)] leading-[0.94] tracking-[-0.03em] [overflow-wrap:anywhere]">
+                        {secondaryCouple.groomName}
+                      </span>
+                      <span className="my-2 block text-[clamp(2rem,4vw,3.5rem)] font-light italic leading-none text-amber-300/80">
+                        &
+                      </span>
+                      <span className="block text-balance text-[clamp(2.2rem,5vw,4.5rem)] leading-[0.94] tracking-[-0.03em] [overflow-wrap:anywhere]">
+                        {secondaryCouple.brideName}
+                      </span>
+                    </div>
+                  </>
+                ) : null}
+              </div>
               {weddingDateLabel ? (
                 <p className="mt-8 text-xs font-light uppercase tracking-[0.28em] text-slate-300">
                   {weddingDateLabel}
@@ -289,7 +310,12 @@ export function PublicInvitationShell({
                     dalam keabadian.
                   </p>
                   <div className="invitation-scene-line mx-auto mt-9 max-w-[min(88vw,40rem)] rounded-3xl border border-amber-100/20 bg-white/[0.06] px-6 py-3 text-balance text-xs font-semibold uppercase leading-5 tracking-[0.18em] text-amber-100/70 backdrop-blur-xl [animation-delay:340ms] [overflow-wrap:anywhere]">
-                    {groomName} & {brideName}
+                    <span className="block">{groomName} & {brideName}</span>
+                    {secondaryCouple ? (
+                      <span className="mt-1 block">
+                        {secondaryCouple.groomName} & {secondaryCouple.brideName}
+                      </span>
+                    ) : null}
                   </div>
                   <div className="mx-auto mt-9 h-px w-48 overflow-hidden bg-amber-100/10">
                     <span className="invitation-progress-sweep block h-full bg-gradient-to-r from-transparent via-amber-200/80 to-transparent" />
