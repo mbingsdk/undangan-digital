@@ -22,6 +22,11 @@ enum InvitationStatus {
   ARCHIVED
 }
 
+enum InvitationType {
+  SINGLE
+  TWIN
+}
+
 enum AttendanceStatus {
   ATTENDING
   NOT_ATTENDING
@@ -50,6 +55,7 @@ model Invitation {
   closingText String?
   coverImage  String?
   musicUrl    String?
+  type        InvitationType   @default(SINGLE)
   status      InvitationStatus @default(DRAFT)
   publishedAt DateTime?
   createdAt   DateTime         @default(now())
@@ -62,10 +68,27 @@ model Invitation {
   wishes    Wish[]
   gifts     GiftAccount[]
   guests    InvitationGuest[]
+  couples   InvitationCouple[]
 
   @@index([status])
   @@index([deletedAt])
   @@map("invitations")
+}
+
+model InvitationCouple {
+  id           String   @id @default(cuid())
+  invitationId String
+  groomName    String
+  brideName    String
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  invitation Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@unique([invitationId, sortOrder])
+  @@index([invitationId])
+  @@map("invitation_couples")
 }
 
 model InvitationEvent {
