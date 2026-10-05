@@ -92,8 +92,13 @@ export async function listInvitations() {
       slug: true,
       status: true,
       title: true,
+      type: true,
       groomName: true,
       brideName: true,
+      couples: {
+        orderBy: { sortOrder: "asc" },
+        select: { groomName: true, brideName: true, sortOrder: true },
+      },
       publishedAt: true,
       updatedAt: true,
     },
@@ -162,6 +167,9 @@ export async function getInvitationById(id: string) {
 export async function getInvitationEditorData(id: string) {
   return prisma.invitation.findFirst({
     include: {
+      couples: {
+        orderBy: { sortOrder: "asc" },
+      },
       events: {
         orderBy: [
           {
@@ -206,8 +214,13 @@ export async function getPublicInvitationBySlug(slug: string) {
       title: true,
       id: true,
       slug: true,
+      type: true,
       groomName: true,
       brideName: true,
+      couples: {
+        orderBy: { sortOrder: "asc" },
+        select: { groomName: true, brideName: true, sortOrder: true },
+      },
       openingText: true,
       closingText: true,
       coverImage: true,
@@ -308,13 +321,30 @@ async function getPublishedInvitationIdBySlug(slug: string) {
   return invitation.id;
 }
 
+function getInvitationWriteData(input: InvitationFormInput) {
+  const { secondBrideName, secondGroomName, ...invitationData } = input;
+
+  const couples =
+    input.type === "TWIN"
+      ? [
+          { groomName: input.groomName, brideName: input.brideName, sortOrder: 0 },
+          { groomName: secondGroomName ?? "", brideName: secondBrideName ?? "", sortOrder: 1 },
+        ]
+      : [];
+
+  return { invitationData, couples };
+}
+
 export async function createInvitation(input: InvitationFormInput) {
   await assertUniqueSlug(input.slug);
 
+  const { invitationData, couples } = getInvitationWriteData(input);
+
   return prisma.invitation.create({
     data: {
-      ...input,
+      ...invitationData,
       publishedAt: getPublishedAt(input.status),
+      couples: couples.length > 0 ? { create: couples } : undefined,
     },
   });
 }
@@ -336,13 +366,19 @@ export async function updateInvitation(id: string, input: InvitationFormInput) {
     throw new InvitationNotFoundError();
   }
 
+  const { invitationData, couples } = getInvitationWriteData(input);
+
   return prisma.invitation.update({
     data: {
-      ...input,
+      ...invitationData,
       publishedAt:
         input.status === "PUBLISHED"
           ? (currentInvitation.publishedAt ?? new Date())
           : null,
+      couples: {
+        deleteMany: {},
+        ...(couples.length > 0 ? { create: couples } : {}),
+      },
     },
     where: {
       id,
