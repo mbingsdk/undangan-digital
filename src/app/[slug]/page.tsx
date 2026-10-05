@@ -124,17 +124,14 @@ function formatEventTime(startTime: string, endTime?: string | null) {
 }
 
 function buildWhatsAppUrl({
-  brideName,
-  groomName,
+  coupleNames,
   publicUrl,
   recipientName,
 }: {
-  brideName: string;
-  groomName: string;
+  coupleNames: string;
   publicUrl: string;
   recipientName: string;
 }) {
-  const coupleNames = `${groomName} & ${brideName}`;
   const message = `Assalamu'alaikum Wr. Wb.
 
 Kepada Yth. ${recipientName},
@@ -163,11 +160,24 @@ export async function generateMetadata({
     };
   }
 
-  const coupleNames = `${invitation.groomName} & ${invitation.brideName}`;
+  const couples =
+    invitation.type === "TWIN" && invitation.couples.length >= 2
+      ? invitation.couples
+      : [
+          {
+            groomName: invitation.groomName,
+            brideName: invitation.brideName,
+            sortOrder: 0,
+          },
+        ];
+  const coupleNames = couples
+    .map((couple) => `${couple.groomName} & ${couple.brideName}`)
+    .join(" • ");
   const firstEvent = invitation.events[0];
   const eventDateLabel = firstEvent ? formatDate(firstEvent.date) : undefined;
   const description = buildInvitationDescription({
     brideName: invitation.brideName,
+    coupleNames,
     eventDateLabel,
     groomName: invitation.groomName,
   });
@@ -190,8 +200,7 @@ export async function generateMetadata({
       "undangan digital",
       "undangan pernikahan",
       "wedding invitation",
-      invitation.groomName,
-      invitation.brideName,
+      ...couples.flatMap((couple) => [couple.groomName, couple.brideName]),
       invitation.title,
     ],
     openGraph: {
@@ -279,9 +288,22 @@ export default async function PublicInvitationPage({
     slug: invitation.slug,
   });
   const recipientName = personalizedGuestName ?? "Bapak/Ibu/Saudara/i";
+  const couples =
+    invitation.type === "TWIN" && invitation.couples.length >= 2
+      ? invitation.couples
+      : [
+          {
+            groomName: invitation.groomName,
+            brideName: invitation.brideName,
+            sortOrder: 0,
+          },
+        ];
+  const coupleNames = couples
+    .map((couple) => `${couple.groomName} & ${couple.brideName}`)
+    .join(" • ");
+  const secondaryCouple = invitation.type === "TWIN" ? couples[1] : null;
   const whatsAppUrl = buildWhatsAppUrl({
-    brideName: invitation.brideName,
-    groomName: invitation.groomName,
+    coupleNames,
     publicUrl,
     recipientName,
   });
@@ -291,7 +313,6 @@ export default async function PublicInvitationPage({
     message: wish.message,
     createdAt: wish.createdAt.toISOString(),
   }));
-  const coupleNames = `${invitation.groomName} & ${invitation.brideName}`;
 
   return (
     <>
@@ -299,6 +320,7 @@ export default async function PublicInvitationPage({
         brideName={invitation.brideName}
         coverImage={invitation.coverImage}
         groomName={invitation.groomName}
+        secondaryCouple={secondaryCouple}
         musicUrl={invitation.musicUrl}
         recipientName={recipientName}
         weddingDateLabel={displayDateLabel}
@@ -324,20 +346,41 @@ export default async function PublicInvitationPage({
             <p className="text-xs font-semibold uppercase tracking-[0.45em] text-amber-200/70">
               Maha Suci Allah
             </p>
-            <div className="mt-10">
-              <h1
-                className={`mx-auto max-w-[min(88vw,60rem)] text-balance font-serif font-medium leading-[0.94] tracking-[-0.03em] text-amber-50 drop-shadow-2xl [overflow-wrap:anywhere] ${getResponsiveNameClass(invitation.groomName)}`}
-              >
-                {invitation.groomName}
-              </h1>
-              <p className="my-3 font-serif text-[clamp(2.5rem,7vw,5.5rem)] font-light italic leading-none text-amber-300/80">
-                &
-              </p>
-              <h1
-                className={`mx-auto max-w-[min(88vw,60rem)] text-balance font-serif font-medium leading-[0.94] tracking-[-0.03em] text-amber-50 drop-shadow-2xl [overflow-wrap:anywhere] ${getResponsiveNameClass(invitation.brideName)}`}
-              >
-                {invitation.brideName}
-              </h1>
+            <div className={`mt-10 ${secondaryCouple ? "grid items-center gap-7 lg:grid-cols-[1fr_auto_1fr] lg:gap-10" : ""}`}>
+              <div>
+                <h1
+                  className={`mx-auto max-w-[min(88vw,60rem)] text-balance font-serif font-medium leading-[0.94] tracking-[-0.03em] text-amber-50 drop-shadow-2xl [overflow-wrap:anywhere] ${secondaryCouple ? "text-[clamp(2.25rem,5vw,4.75rem)]" : getResponsiveNameClass(invitation.groomName)}`}
+                >
+                  {invitation.groomName}
+                </h1>
+                <p className={`my-3 font-serif font-light italic leading-none text-amber-300/80 ${secondaryCouple ? "text-[clamp(2rem,4vw,3.5rem)]" : "text-[clamp(2.5rem,7vw,5.5rem)]"}`}>
+                  &
+                </p>
+                <h1
+                  className={`mx-auto max-w-[min(88vw,60rem)] text-balance font-serif font-medium leading-[0.94] tracking-[-0.03em] text-amber-50 drop-shadow-2xl [overflow-wrap:anywhere] ${secondaryCouple ? "text-[clamp(2.25rem,5vw,4.75rem)]" : getResponsiveNameClass(invitation.brideName)}`}
+                >
+                  {invitation.brideName}
+                </h1>
+              </div>
+
+              {secondaryCouple ? (
+                <>
+                  <div className="text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-amber-200/50">
+                    bersama
+                  </div>
+                  <div>
+                    <h1 className="mx-auto max-w-[min(88vw,60rem)] text-balance font-serif text-[clamp(2.25rem,5vw,4.75rem)] font-medium leading-[0.94] tracking-[-0.03em] text-amber-50 drop-shadow-2xl [overflow-wrap:anywhere]">
+                      {secondaryCouple.groomName}
+                    </h1>
+                    <p className="my-3 font-serif text-[clamp(2rem,4vw,3.5rem)] font-light italic leading-none text-amber-300/80">
+                      &
+                    </p>
+                    <h1 className="mx-auto max-w-[min(88vw,60rem)] text-balance font-serif text-[clamp(2.25rem,5vw,4.75rem)] font-medium leading-[0.94] tracking-[-0.03em] text-amber-50 drop-shadow-2xl [overflow-wrap:anywhere]">
+                      {secondaryCouple.brideName}
+                    </h1>
+                  </div>
+                </>
+              ) : null}
             </div>
 
             <p className="mx-auto mt-12 max-w-2xl whitespace-pre-line text-sm font-light leading-8 text-slate-300 sm:text-base">
@@ -623,9 +666,16 @@ export default async function PublicInvitationPage({
                 "Merupakan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu."}
             </p>
 
-            <h2 className="mx-auto mt-12 max-w-3xl text-balance font-serif text-[clamp(2.5rem,8vw,5rem)] font-medium leading-[0.95] tracking-[-0.03em] text-amber-50 [overflow-wrap:anywhere]">
-              {coupleNames}
-            </h2>
+            <div className="mx-auto mt-12 max-w-4xl space-y-5">
+              {couples.map((couple) => (
+                <h2
+                  className="text-balance font-serif text-[clamp(2.25rem,6vw,4.5rem)] font-medium leading-[0.95] tracking-[-0.03em] text-amber-50 [overflow-wrap:anywhere]"
+                  key={couple.sortOrder}
+                >
+                  {couple.groomName} & {couple.brideName}
+                </h2>
+              ))}
+            </div>
 
             <a
               className="mx-auto mt-12 inline-flex items-center justify-center gap-3 rounded-full border border-emerald-200/20 bg-emerald-400/15 px-7 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-50 shadow-2xl shadow-emerald-950/20 transition hover:bg-emerald-400/25"
