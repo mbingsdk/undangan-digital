@@ -55,9 +55,15 @@ export default async function InvitationListPage() {
                       </h2>
                       <AdminStatusBadge status={invitation.status} />
                     </div>
-                    <p className="mt-2 text-sm text-stone-600">
-                      {invitation.groomName} & {invitation.brideName}
-                    </p>
+                    <div className="mt-2 text-sm text-stone-600">
+                      <p>{invitation.groomName} & {invitation.brideName}</p>
+                      {invitation.type === "TWIN" && invitation.couples[1] ? (
+                        <p className="mt-1">
+                          {invitation.couples[1].groomName} &{" "}
+                          {invitation.couples[1].brideName}
+                        </p>
+                      ) : null}
+                    </div>
                     <p className="mt-1 break-all text-sm text-stone-600">
                       /{invitation.slug}
                     </p>
