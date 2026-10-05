@@ -31,6 +31,16 @@ export async function GET(_request: Request, context: OgImageRouteContext) {
     });
   }
 
+  const couples =
+    invitation.type === "TWIN" && invitation.couples.length >= 2
+      ? invitation.couples
+      : [
+          {
+            groomName: invitation.groomName,
+            brideName: invitation.brideName,
+            sortOrder: 0,
+          },
+        ];
   const firstEvent = invitation.events[0];
   const eventDateLabel = firstEvent
     ? formatDate(firstEvent.date)
@@ -123,29 +133,48 @@ export async function GET(_request: Request, context: OgImageRouteContext) {
           </div>
           <div
             style={{
+              alignItems: "center",
               color: "#fffbeb",
+              display: "flex",
+              flexDirection: invitation.type === "TWIN" ? "row" : "column",
               fontFamily: "serif",
-              fontSize: 108,
+              fontSize: invitation.type === "TWIN" ? 56 : 108,
               fontWeight: 500,
+              gap: invitation.type === "TWIN" ? 44 : 0,
+              justifyContent: "center",
               lineHeight: 0.94,
-              maxWidth: 980,
+              maxWidth: 1040,
               textShadow: "0 16px 44px rgba(0,0,0,0.45)",
+              width: "100%",
             }}
           >
-            {invitation.groomName}
-            <span
-              style={{
-                color: "#fcd34d",
-                display: "block",
-                fontSize: 82,
-                fontStyle: "italic",
-                fontWeight: 300,
-                margin: "12px 0",
-              }}
-            >
-              &
-            </span>
-            {invitation.brideName}
+            {couples.map((couple) => (
+              <div
+                key={couple.sortOrder}
+                style={{
+                  alignItems: "center",
+                  display: "flex",
+                  flex: 1,
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+              >
+                <span>{couple.groomName}</span>
+                <span
+                  style={{
+                    color: "#fcd34d",
+                    display: "block",
+                    fontSize: invitation.type === "TWIN" ? 46 : 82,
+                    fontStyle: "italic",
+                    fontWeight: 300,
+                    margin: invitation.type === "TWIN" ? "8px 0" : "12px 0",
+                  }}
+                >
+                  &
+                </span>
+                <span>{couple.brideName}</span>
+              </div>
+            ))}
           </div>
           <div
             style={{
